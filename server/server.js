@@ -9,11 +9,18 @@ dotenv.config();
 // Connect to MongoDB
 connectDB();
 
+const authRoutes = require("./routes/authRoutes");
+
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// auth Routes
+app.use("/api/auth", authRoutes);
+
 
 // Test Route
 app.get("/", (req, res) => {
