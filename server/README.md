@@ -22,25 +22,36 @@ This platform is designed to support rentals for various asset types including v
 - MVC pattern (Routes → Controllers → Models)
 - Stateless JWT-based authentication
 - Middleware-driven route protection
-- Environment-based configuration management
+- Environment-based configuration
 - Cloud database integration (MongoDB Atlas)
 
 ---
 
-## Development Progress
+# Development Log
 
-### Backend Foundation
+## Day 1 – Backend Foundation
+
 - Express server initialized
-- Clean MVC folder structure
+- Clean MVC folder structure created
 - MongoDB Atlas connected
-- Environment variables configured
+- Environment variables configured securely
+- Basic server testing completed
 
-### Authentication System
-- User Registration & Login APIs
-- Password hashing using bcrypt
+Established a scalable backend base for future feature implementation.
+
+---
+
+## Day 2 – Authentication System
+
+- User Registration API
+- User Login API
+- Password hashing using bcrypt (salt rounds = 10)
 - JWT token generation
-- Protected routes via custom middleware
+- Custom authentication middleware
+- Protected route implementation
 - Proper 401 handling for unauthorized access
+
+This authentication layer enables secure user-based bookings and payment integration in upcoming phases.
 
 ---
 
@@ -54,7 +65,7 @@ This platform is designed to support rentals for various asset types including v
 
 ---
 
-## Status
+## Current Status
 
 Authentication layer completed.  
 Rental module under development.
