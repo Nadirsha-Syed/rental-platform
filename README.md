@@ -90,6 +90,39 @@ This platform supports rentals for various asset types including:
 - `isAvailable`
 - Automatic timestamps
 
+## ✅ Day 4 – Marketplace Retrieval & Filtering
+
+### Features Implemented
+
+- GET all rentals
+- GET single rental by ID
+- Category-based filtering using query params
+- Location-based filtering
+- MongoDB dynamic filtering logic
+- Data population using `.populate()` for owner details
+
+✔ Rental listings now behave like a real marketplace API.
+
+---
+
+## ✅ Day 5 – Authorization (Owner-Based Access Control)
+
+### Features Implemented
+
+- Update rental (PUT) – Owner only
+- Delete rental (DELETE) – Owner only
+- 403 Forbidden handling for unauthorized modification
+- Proper 401 vs 403 response differentiation
+
+### Security Enhancement
+
+- Resource ownership validation:
+  - Compared `rental.owner` with `req.user._id`
+  - Prevented cross-user modification
+
+✔ Backend now enforces secure resource-level authorization.
+
+
 ### Features Implemented
 
 - Protected route for creating rental listings
