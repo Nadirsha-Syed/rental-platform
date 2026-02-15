@@ -169,10 +169,6 @@ Example Body:
 
 # 📌 Upcoming Features
 
-- GET all rentals
-- GET single rental
-- Category-based filtering
-- Search by location
 - Booking system (hourly pricing logic)
 - Razorpay payment integration
 - Role-based access control (Admin / Vendor / User)
