@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const rentalRoutes = require("./routes/rentalRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
+
 
 // Load environment variables
 dotenv.config();
@@ -20,6 +22,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/bookings", bookingRoutes);
 app.use("/api/rentals", rentalRoutes);
 // auth Routes
 app.use("/api/auth", authRoutes);
