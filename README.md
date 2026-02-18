@@ -122,7 +122,6 @@ This platform supports rentals for various asset types including:
 
 ✔ Backend now enforces secure resource-level authorization.
 
-
 ### Features Implemented
 
 - Protected route for creating rental listings
@@ -157,6 +156,26 @@ Example Body:
 
 ---
 
+## ✅ Day 6 – Booking System (Core Logic Completed)
+
+### Features Implemented
+
+- Booking model creation
+- Relational linking:
+  - `user` → linked to User model
+  - `rentalItem` → linked to RentalItem model
+- Time-based booking (`startTime` & `endTime`)
+- Automatic hourly price calculation
+- Booking status system
+- Protected booking route
+- Validation for:
+  - Missing fields
+  - Invalid rental ID
+  - Invalid time range (endTime > startTime)
+- Error handling for booking creation
+
+---
+
 # 🔐 Security Highlights
 
 - JWT-based route protection
@@ -164,23 +183,29 @@ Example Body:
 - Middleware-based authorization
 - Owner linking enforced server-side
 - Proper HTTP status code handling
+- Backend-controlled pricing logic
 
 ---
 
 # 📌 Upcoming Features
 
-- Booking system (hourly pricing logic)
+- Prevent double-booking (time conflict validation)
+- Booking cancellation endpoint
 - Razorpay payment integration
 - Role-based access control (Admin / Vendor / User)
 - React frontend integration
+- Deployment (Render / Railway / AWS)
 
 ---
 
 # 📊 Current Status
 
-✔ Authentication system completed  
-✔ Rental creation module completed  
-🚧 Booking and payment modules in progress  
+✔ Authentication system completed
+✔ Rental creation module completed
+✔ Owner-based authorization completed
+✔ Booking system core logic completed
+🚧 Double-booking prevention next
+🚧 Payment integration (Razorpay) upcoming 
 
 ---
 
