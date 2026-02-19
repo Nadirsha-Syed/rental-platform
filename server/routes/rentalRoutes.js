@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const { authorizeRoles } = require("../middleware/roleMiddleware");
+
 const {
   createRentalItem,
   getRentalItems,
@@ -10,7 +12,7 @@ const {
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/", protect, createRentalItem);
+router.post("/", protect, authorizeRoles("vendor", "admin"),createRentalItem);
 router.get("/", getRentalItems);
 router.get("/:id", getRentalById);
 router.put("/:id", protect, updateRentalItem);
