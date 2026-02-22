@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Booking = require("../models/Booking");
-const { createBooking, cancelBooking , getMyBookings ,getBookingsForMyRentals} = require("../controllers/bookingController");
+const { createBooking, cancelBooking , getMyBookings ,getBookingsForMyRentals,getOwnerRevenue ,confirmBooking} = require("../controllers/bookingController");
 const { protect } = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
-
 
 router.get("/", protect, async (req, res) => {
   const bookings = await Booking.find()
@@ -13,6 +12,14 @@ router.get("/", protect, async (req, res) => {
   
   res.json(bookings);
 });
+
+router.put("/:id/confirm", protect, confirmBooking);
+router.get(
+  "/owner-revenue",
+  protect,
+  authorizeRoles("vendor", "admin"),
+  getOwnerRevenue
+);
 
 
 router.get("/my-bookings", protect, getMyBookings);

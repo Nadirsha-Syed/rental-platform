@@ -15,6 +15,7 @@ This platform supports rentals for various asset types including:
 
 ## 🚀 Tech Stack
 
+### Backend
 - Node.js
 - Express.js
 - MongoDB Atlas
@@ -23,6 +24,13 @@ This platform supports rentals for various asset types including:
 - bcryptjs
 - dotenv
 
+### Frontend (In Progress)
+- React (Vite)
+- Tailwind CSS
+- Context API
+- Multi-theme architecture
+- Glassmorphism UI system
+
 ---
 
 ## 🏗 Architecture
@@ -30,7 +38,9 @@ This platform supports rentals for various asset types including:
 - MVC pattern (Routes → Controllers → Models)
 - Stateless JWT-based authentication
 - Middleware-driven route protection
-- Secure password hashing
+- Owner-based authorization
+- Role-based access control (RBAC)
+- Relational schema design using MongoDB references
 - Environment-based configuration
 - Cloud database integration (MongoDB Atlas)
 
@@ -175,50 +185,150 @@ Example Body:
 - Error handling for booking creation
 
 ---
+## ✅ Day 7 – Booking Conflict Prevention
+
+- Time-overlap validation logic
+- MongoDB-based time range conflict checks
+- 409 Conflict response handling
+- Prevention of double-booking
+
+✔ Booking integrity enforced.
+
+---
+
+## ✅ Day 8 – Booking Cancellation System
+
+- Booking status updates (Confirmed / Cancelled)
+- Controlled cancellation flow
+- Permission-based cancellation
+- Proper validation & error handling
+
+✔ Booking lifecycle management implemented.
+
+---
+
+## ✅ Day 9 – Role-Based Access Control (RBAC)
+
+- Role system (Admin / Vendor / User)
+- Middleware-based role protection
+- Role-restricted routes
+- Admin-level permissions
+
+✔ Multi-role scalable architecture established.
+
+---
+
+## ✅ Day 10 – Dashboard APIs
+
+- Role-based dashboard endpoints
+- Aggregated booking statistics
+- Rental ownership summaries
+- Structured API responses for frontend use
+
+✔ Backend ready for dashboard integration.
+
+---
+
+# 🎨 Frontend Phase
+
+---
+
+## ✅ Day 11 – Frontend Setup (React + Vite)
+
+- Vite initialized
+- React project structured
+- Tailwind CSS integrated
+- Clean scalable folder structure
+- Base layout scaffolded
+
+✔ Frontend environment prepared.
+
+---
+
+## ✅ Day 12 – Dashboard UI Layout
+
+- Admin-style dashboard layout
+- Sidebar navigation
+- Card-based UI system
+- Responsive structure
+- Protected layout placeholders
+
+✔ Scalable dashboard UI foundation created.
+
+---
+
+## ✅ Day 13 – Multi-Theme System & UI Refinement
+
+Three themes implemented:
+
+- Premium Dark (Default)
+- Neon (Cyber)
+- Corporate (Light)
+
+### Architecture
+
+- CSS Variables-based design tokens
+- Centralized theme configuration
+- React Context API for theme switching
+- Persistent theme storage (localStorage)
+- Smooth animated theme transitions
+- Glassmorphism UI components
+
+✔ Runtime theme switching with scalable design architecture.
+
+---
 
 # 🔐 Security Highlights
 
-- JWT-based route protection
+- JWT-based authentication
 - bcrypt password hashing
 - Middleware-based authorization
-- Owner linking enforced server-side
-- Proper HTTP status code handling
+- Role-based route protection
+- Resource ownership enforcement
 - Backend-controlled pricing logic
+- Proper HTTP status code usage
 
 ---
 
 # 📌 Upcoming Features
 
-- Prevent double-booking (time conflict validation)
-- Booking cancellation endpoint
+- Frontend ↔ Backend API integration
+- Frontend authentication flow
+- Booking UI integration
 - Razorpay payment integration
-- Role-based access control (Admin / Vendor / User)
-- React frontend integration
+- Admin analytics dashboard
 - Deployment (Render / Railway / AWS)
 
 ---
 
 # 📊 Current Status
 
-✔ Authentication system completed
-✔ Rental creation module completed
-✔ Owner-based authorization completed
-✔ Booking system core logic completed
-🚧 Double-booking prevention next
-🚧 Payment integration (Razorpay) upcoming 
+### Backend
+✔ Authentication system  
+✔ Rental module  
+✔ Owner-based authorization  
+✔ Booking system  
+✔ Conflict prevention  
+✔ Cancellation system  
+✔ Role-based access control  
+✔ Dashboard APIs  
+
+### Frontend
+✔ React + Vite setup  
+✔ Dashboard layout  
+✔ Multi-theme system  
+✔ Glassmorphism UI  
+❌ Backend integration pending  
 
 ---
 
 ## 💡 Vision
 
-To build a scalable multi-category rental marketplace that can serve:
+To build a scalable, production-ready rental marketplace capable of serving:
 
-- Urban vehicle rentals
-- Agricultural equipment sharing
-- Event & camera rentals
-- Local equipment marketplaces
+- Urban vehicle rentals  
+- Agricultural equipment sharing  
+- Event & media rentals  
+- Industrial equipment marketplaces  
 
-Designed with extensibility and production-readiness in mind.
-
----
-
+Built with clean architecture, security-first design, and extensibility as core principles.

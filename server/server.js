@@ -1,20 +1,13 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const connectDB = require("./config/db");
-const rentalRoutes = require("./routes/rentalRoutes");
-const bookingRoutes = require("./routes/bookingRoutes");
-
-
-// Load environment variables
-dotenv.config();
-
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import connectDB from "./config/db.js";
+import rentalRoutes from "./routes/rentalRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 // Connect to MongoDB
 connectDB();
-
-const authRoutes = require("./routes/authRoutes");
-
-
 
 const app = express();
 
@@ -26,7 +19,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/rentals", rentalRoutes);
 // auth Routes
 app.use("/api/auth", authRoutes);
-
+app.use("/api/users", userRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

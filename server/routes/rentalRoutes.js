@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
+
 const { authorizeRoles } = require("../middleware/roleMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 
 const {
   createRentalItem,
@@ -10,9 +12,21 @@ const {
   deleteRentalItem,
 } = require("../controllers/rentalController");
 
-const { protect } = require("../middleware/authMiddleware");
+router.post(
+  "/",
+  protect,
+  authorizeRoles("vendor", "admin"),
+  async (req, res, next) => {
+    if (req.user.role === "vendor" && !req.user.isApproved) {
+      return res.status(403).json({
+        message: "Vendor not approved by admin",
+      });
+    }
+    next();
+  },
+  createRentalItem
+);
 
-router.post("/", protect, authorizeRoles("vendor", "admin"),createRentalItem);
 router.get("/", getRentalItems);
 router.get("/:id", getRentalById);
 router.put("/:id", protect, updateRentalItem);

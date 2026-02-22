@@ -30,14 +30,14 @@ const createBooking = async (req, res) => {
     // ✅ TIME CONFLICT CHECK
     const conflictingBooking = await Booking.findOne({
       rentalItem: rentalItemId,
-      status: "booked",
+      status: "confirmed",
       startTime: { $lt: end },
       endTime: { $gt: start },
     });
 
     if (conflictingBooking) {
       return res.status(400).json({
-        message: "This rental is already booked for the selected time range",
+        message: "This rental is already confirmed for the selected time range",
       });
     }
 
@@ -49,7 +49,7 @@ const createBooking = async (req, res) => {
       startTime: start,
       endTime: end,
       totalPrice,
-      status: "booked", // ✅ must match enum
+      status: "confirmed", // ✅ must match enum
     });
 
     console.log("BOOKING CREATED:", booking);
@@ -97,6 +97,44 @@ const getBookingsForMyRentals = async (req, res) => {
 };
 
 
+const getOwnerRevenue = async (req, res) => {
+  try {
+    // Step 1: Get rentals owned by vendor
+    const myRentals = await RentalItem.find({ owner: req.user._id });
+    const rentalIds = myRentals.map(r => r._id);
+
+    // Step 2: Get bookings for those rentals
+    const bookings = await Booking.find({
+      rentalItem: { $in: rentalIds },
+    });
+
+    let totalRevenue = 0;
+    let activeBookings = 0;
+    let cancelledBookings = 0;
+
+    bookings.forEach((booking) => {
+      if (booking.status !== "cancelled") {
+        totalRevenue += booking.totalPrice;
+        activeBookings++;
+      } else {
+        cancelledBookings++;
+      }
+    });
+
+    res.json({
+      totalBookings: bookings.length,
+      activeBookings,
+      cancelledBookings,
+      totalRevenue,
+    });
+
+  } catch (error) {
+    console.log("REVENUE ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 const cancelBooking = async (req, res) => {
   try {
     const bookingId = req.params.id.trim();
@@ -127,5 +165,36 @@ const cancelBooking = async (req, res) => {
   }
 };
 
+const confirmBooking = async (req, res) => {
+  const booking = await Booking.findById(req.params.id);
 
-module.exports = { createBooking, cancelBooking , getMyBookings , getBookingsForMyRentals };
+  if (!booking) {
+    return res.status(404).json({ message: "Booking not found" });
+  }
+
+  if (booking.status !== "pending") {
+    return res.status(400).json({ message: "Booking cannot be confirmed" });
+  }
+  
+  if (booking.expiresAt < new Date()) {
+  booking.status = "expired";
+  await booking.save();
+
+  return res.status(400).json({
+    message: "Booking has expired",
+  });
+}
+  // Simulate successful payment
+  booking.status = "confirmed";
+  booking.paymentStatus = "paid";
+
+  await booking.save();
+
+  res.json({
+    success: true,
+    message: "Booking confirmed successfully",
+    data: booking,
+  });
+};
+
+module.exports = { createBooking, cancelBooking , getMyBookings , getBookingsForMyRentals , getOwnerRevenue , confirmBooking , };
