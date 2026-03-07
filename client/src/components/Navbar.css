@@ -1,0 +1,56 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 16px 40px;
+
+  background: var(--surface);
+  border-bottom: 1px solid var(--glassBorder);
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--textMain);
+  cursor: pointer;
+}
+
+.links {
+  display: flex;
+  gap: 20px;
+}
+
+.links button {
+  background: none;
+  border: none;
+  color: var(--textMuted);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.links button:hover {
+  color: var(--textMain);
+}
+
+.themes {
+  display: flex;
+  gap: 10px;
+}
+
+.themes button {
+  border: 1px solid var(--glassBorder);
+  background: transparent;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.themes button:hover {
+  background: var(--surface);
+}

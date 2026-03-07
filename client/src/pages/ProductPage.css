@@ -1,0 +1,37 @@
+.products {
+  padding: 40px 60px;
+}
+
+/* Header */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.topbar h1 {
+  font-size: 28px;
+  color: var(--textMain);
+}
+
+/* Search */
+
+.search {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--glassBorder);
+  background: var(--surface);
+  color: var(--textMain);
+  width: 240px;
+  outline: none;
+}
+
+/* Product Grid */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
