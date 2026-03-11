@@ -32,6 +32,18 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+  color: rgb(var(--text-main));
 }

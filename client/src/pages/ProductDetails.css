@@ -1,0 +1,51 @@
+.productDetailsPage {
+  padding: 40px;
+}
+
+.productContainer {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.imageSection img {
+  width: 100%;
+  border-radius: 16px;
+}
+
+.infoSection h1 {
+  color: var(--textMain);
+  margin-bottom: 10px;
+}
+
+.location {
+  color: var(--textMuted);
+  margin-bottom: 10px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+.description {
+  color: var(--textMuted);
+  margin-bottom: 30px;
+}
+
+.bookBtn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.bookBtn:hover {
+  opacity: 0.9;
+}

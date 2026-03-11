@@ -35,12 +35,6 @@ export default function ProductsPage() {
 
       <div className="topbar">
         <h1>Explore Rentals</h1>
-
-        <input
-          type="text"
-          placeholder="Search equipment..."
-          className="search"
-        />
       </div>
 
       <div className="grid">

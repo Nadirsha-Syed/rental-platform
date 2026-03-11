@@ -1,28 +1,35 @@
-import "./Navbar.css";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
-import { useNavigate } from "react-router-dom";
+import "./Navbar.css";
 
 export default function Navbar() {
   const { setTheme } = useContext(ThemeContext);
-  const navigate = useNavigate();
 
   return (
-    <header className="nav">
-      <div className="brand" onClick={() => navigate("/")}>
-        RentHub
-      </div>
+    <nav className="nav">
+      <div className="navInner">
 
-      <nav className="links">
-        <button onClick={() => navigate("/products")}>Explore</button>
-        <button onClick={() => navigate("/")}>Dashboard</button>
-      </nav>
+        {/* Logo */}
+        <div className="logo">
+          RentalHub
+        </div>
 
-      <div className="themes">
-        <button onClick={() => setTheme("default")}>Default</button>
-        <button onClick={() => setTheme("neon")}>Neon</button>
-        <button onClick={() => setTheme("corporate")}>Corp</button>
+        {/* Search */}
+        <div className="searchWrap">
+          <input
+            type="text"
+            placeholder="Search cameras, drones, tools..."
+            className="searchInput"
+          />
+        </div>
+
+        {/* Right Actions */}
+        <div className="navActions">
+          <button onClick={() => setTheme("default")}>Light</button>
+          <button onClick={() => setTheme("corporate")}>Dark</button>
+        </div>
+
       </div>
-    </header>
+    </nav>
   );
 }

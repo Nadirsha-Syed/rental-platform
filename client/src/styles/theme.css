@@ -1,52 +1,38 @@
-/* DEFAULT THEME */
+/* LIGHT THEME */
 
 :root[data-theme="default"] {
-  --color-primary: 99 102 241;
+  --surface: #ffffff;
+
+  --color-primary: 59 130 246;
   --color-accent: 139 92 246;
+
+  --color-bg-start: 248 250 252;
+  --color-bg-end: 241 245 249;
+
+  --text-main: 15 23 42;
+  --text-muted: 100 116 139;
+
+  --glass-bg: 255 255 255;
+  --glass-opacity: 0.6;
+  --glass-border: 0 0 0;
+}
+
+
+/* DARK / CORPORATE THEME */
+
+:root[data-theme="corporate"] {
+  --surface: #111827;
+
+  --color-primary: 99 102 241;
+  --color-accent: 168 85 247;
 
   --color-bg-start: 15 23 42;
   --color-bg-end: 2 6 23;
 
-  --text-main: 248 250 252;
+  --text-main: 226 232 240;
   --text-muted: 148 163 184;
 
-  --glass-bg: 255 255 255;
-  --glass-opacity: 0.05;
+  --glass-bg: 30 41 59;
+  --glass-opacity: 0.5;
   --glass-border: 255 255 255;
-}
-
-
-/* NEON THEME */
-
-:root[data-theme="neon"] {
-  --color-primary: 34 197 94;
-  --color-accent: 59 130 246;
-
-  --color-bg-start: 2 6 23;
-  --color-bg-end: 15 23 42;
-
-  --text-main: 236 254 255;
-  --text-muted: 148 163 184;
-
-  --glass-bg: 0 255 200;
-  --glass-opacity: 0.05;
-  --glass-border: 0 255 200;
-}
-
-
-/* CORPORATE THEME */
-
-:root[data-theme="corporate"] {
-  --color-primary: 37 99 235;
-  --color-accent: 79 70 229;
-
-  --color-bg-start: 243 244 246;
-  --color-bg-end: 229 231 235;
-
-  --text-main: 17 24 39;
-  --text-muted: 107 114 128;
-
-  --glass-bg: 255 255 255;
-  --glass-opacity: 0.7;
-  --glass-border: 0 0 0;
 }

@@ -1,56 +1,71 @@
 .nav {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
 
-  display: flex;
-  justify-content: space-between;
+  background: rgb(var(--surface));
+  border-bottom: 1px solid rgb(var(--glass-border));
+}
+
+.navInner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 14px 24px;
+
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
   align-items: center;
-
-  padding: 16px 40px;
-
-  background: var(--surface);
-  border-bottom: 1px solid var(--glassBorder);
-}
-
-.brand {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--textMain);
-  cursor: pointer;
-}
-
-.links {
-  display: flex;
   gap: 20px;
 }
 
-.links button {
-  background: none;
-  border: none;
-  color: var(--textMuted);
-  font-size: 15px;
-  cursor: pointer;
+/* LOGO */
+
+.logo {
+  font-weight: 700;
+  font-size: 20px;
+  color: rgb(var(--text-main));
 }
 
-.links button:hover {
-  color: var(--textMain);
-}
+/* SEARCH */
 
-.themes {
+.searchWrap {
   display: flex;
+  justify-content: center;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 500px;
+
+  padding: 10px 16px;
+  border-radius: 30px;
+
+  border: 1px solid rgb(var(--glass-border));
+  background: rgb(var(--surface));
+  color: rgb(var(--text-main));
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: rgb(var(--color-primary));
+}
+
+/* RIGHT SIDE */
+
+.navActions {
+  display: flex;
+  justify-content: flex-end;
   gap: 10px;
 }
 
-.themes button {
-  border: 1px solid var(--glassBorder);
-  background: transparent;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-}
+.navActions button {
+  padding: 6px 12px;
 
-.themes button:hover {
-  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid rgb(var(--glass-border));
+
+  background: rgb(var(--surface));
+  color: rgb(var(--text-main));
+
+  cursor: pointer;
 }
