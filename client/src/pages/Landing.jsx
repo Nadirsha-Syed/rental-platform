@@ -34,18 +34,6 @@ export default function Landing() {
           Get Started
         </button>
 
-        {/* Theme Switcher */}
-        <div className="flex justify-center gap-3 mt-8">
-          <button onClick={() => setTheme("default")} className="text-sm text-textMuted hover:text-textMain">
-            Default
-          </button>
-          <button onClick={() => setTheme("neon")} className="text-sm text-textMuted hover:text-textMain">
-            Neon
-          </button>
-          <button onClick={() => setTheme("corporate")} className="text-sm text-textMuted hover:text-textMain">
-            Corporate
-          </button>
-        </div>
 
       </div>
     </div>

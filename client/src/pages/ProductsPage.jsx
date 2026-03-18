@@ -1,49 +1,59 @@
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import "./ProductPage.css";
 import ProductCard from "../components/ProductCard";
 
-
-const data = [
-  {
-    id: 1,
-    title: "Canon EOS R6",
-    location: "Mumbai",
-    price: 1200,
-    image: "https://images.unsplash.com/photo-1519183071298-a2962be96a6c"
-  },
-  {
-    id: 2,
-    title: "MacBook Pro",
-    location: "Delhi",
-    price: 2500,
-    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8"
-  },
-  {
-    id: 3,
-    title: "GoPro Hero 11",
-    location: "Bangalore",
-    price: 900,
-    image: "https://images.unsplash.com/photo-1508898578281-774ac4893e7c"
-  }
-];
-
 export default function ProductsPage() {
+  const [rentals, setRentals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // 🔥 Fetch function (reusable)
+  const fetchRentals = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch("http://localhost:5000/api/rentals");
+      const data = await res.json();
+      console.log("Fetched rentals:", data);
+
+      setRentals(Array.isArray(data) ? data : []);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching rentals:", err);
+      setError("Failed to load rentals");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRentals();
+  }, []);
+
   return (
     <>
-    <Navbar/>
-    <div className="products">
+      <Navbar />
 
-      <div className="topbar">
-        <h1>Explore Rentals</h1>
+      <div className="page">
+        <h2 className="title">Available Rentals</h2>
+
+        {/* 🔄 Loading */}
+        {loading && <p>Loading rentals...</p>}
+
+        {/* ❌ Error */}
+        {error && <p className="text-red-500">{error}</p>}
+
+        {/* 📦 Empty State */}
+        {!loading && rentals.length === 0 && (
+          <p>No rentals available yet</p>
+        )}
+
+        {/* 🧾 Products Grid */}
+        <div className="grid">
+          {rentals.map((item) => (
+            <ProductCard key={item._id} item={item} />
+          ))}
+        </div>
       </div>
-
-      <div className="grid">
-        {data.map((item) => (
-          <ProductCard key={item.id} item={item} />
-        ))}
-      </div>
-
-    </div>
     </>
   );
 }

@@ -1,17 +1,21 @@
-const RentalItem = require("../models/RentalItem");
+import RentalItem from "../models/RentalItem.js";
+
+console.log("Rental Controller Loaded"); // Debugging log
 
 // ✅ Create Rental Item (Protected)
-const createRentalItem = async (req, res) => {
+export const createRentalItem = async (req, res) => {
+  console.log("Creating Rental Item with data:", req.body); // Debugging log
   try {
-    const { title, category, description, pricePerHour, location } = req.body;
+    const { title, category, description, pricePerHour, location, image } = req.body;
 
     const rental = await RentalItem.create({
       title,
       category,
       description,
-      pricePerHour,
+      pricePerHour: Number(pricePerHour),
       location,
       owner: req.user._id, // 🔐 secure owner linking
+      image,
     });
 
     res.status(201).json(rental);
@@ -22,7 +26,8 @@ const createRentalItem = async (req, res) => {
 };
 
 // ✅ Get All Rental Items (With Filters)
-const getRentalItems = async (req, res) => {
+export const getRentalItems = async (req, res) => {
+  console.log("real controller running");
   try {
     const { category, location } = req.query;
 
@@ -41,12 +46,13 @@ const getRentalItems = async (req, res) => {
 
     res.json(rentals);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching rentals" });
+    console.error("error:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 
 // ✅ Get Single Rental Item
-const getRentalById = async (req, res) => {
+export const getRentalById = async (req, res) => {
   try {
     const rental = await RentalItem.findById(req.params.id)
       .populate("owner", "name email");
@@ -62,7 +68,7 @@ const getRentalById = async (req, res) => {
 };
 
 // Update Rental Item (Owner Only)
-const updateRentalItem = async (req, res) => {
+export const updateRentalItem = async (req, res) => {
   try {
     const rental = await RentalItem.findById(req.params.id);
 
@@ -88,7 +94,7 @@ const updateRentalItem = async (req, res) => {
 };
 
 // Delete Rental Item (Owner Only)
-const deleteRentalItem = async (req, res) => {
+export const deleteRentalItem = async (req, res) => {
   try {
     const rental = await RentalItem.findById(req.params.id);
 
@@ -107,13 +113,4 @@ const deleteRentalItem = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error deleting rental" });
   }
-};
-
-
-module.exports = {
-  createRentalItem,
-  getRentalItems,
-  getRentalById,
-  updateRentalItem,
-  deleteRentalItem,
 };

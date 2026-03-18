@@ -1,20 +1,34 @@
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import "./Navbar.css";
+import { Link, useNavigate } from "react-router-dom";
+
 
 export default function Navbar() {
-  const { setTheme } = useContext(ThemeContext);
+  const { theme, setTheme } = useContext(ThemeContext);
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const toggleTheme = () => {
+    setTheme(theme === "default" ? "corporate" : "default");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   return (
     <nav className="nav">
       <div className="navInner">
 
-        {/* Logo */}
-        <div className="logo">
+        {/* LEFT - Logo */}
+        <Link to="/products" className="logo">
           RentalHub
-        </div>
+        </Link>
 
-        {/* Search */}
+        {/* CENTER - Search */}
         <div className="searchWrap">
           <input
             type="text"
@@ -23,10 +37,43 @@ export default function Navbar() {
           />
         </div>
 
-        {/* Right Actions */}
+        {/* RIGHT - Actions */}
         <div className="navActions">
-          <button onClick={() => setTheme("default")}>Light</button>
-          <button onClick={() => setTheme("corporate")}>Dark</button>
+
+          {/* Add Rental only if logged in */}
+          {user && (
+            <Link to="/add-rental" className="addBtn">
+              Add Rental
+            </Link>
+          )}
+
+          {/* 🔐 Auth Section */}
+          {user ? (
+            <>
+              <span className="userName">
+                Hi, {user.name}
+              </span>
+
+              <button onClick={handleLogout} className="logoutBtn">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="loginBtn">
+              Login
+            </Link>
+          )}
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className={`themeSwitch ${
+              theme === "corporate" ? "active" : ""
+            }`}
+          >
+            <span className="switchBall"></span>
+          </button>
+
         </div>
 
       </div>

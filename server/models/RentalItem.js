@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const rentalItemSchema = mongoose.Schema(
   {
@@ -10,7 +10,7 @@ const rentalItemSchema = mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["car", "bike", "harvester", "camera", "other"],
+      enum: ["car", "bike", "agri-tool", "camera", "tools"],
     },
 
     description: {
@@ -24,6 +24,10 @@ const rentalItemSchema = mongoose.Schema(
     },
 
     location: {
+      type: String,
+      required: true,
+    },
+    image: {
       type: String,
       required: true,
     },
@@ -42,4 +46,6 @@ const rentalItemSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("RentalItem", rentalItemSchema);
+// ✅ ES Module Export
+const RentalItem = mongoose.model("RentalItem", rentalItemSchema);
+export default RentalItem;

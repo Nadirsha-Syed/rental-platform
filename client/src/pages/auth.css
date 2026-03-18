@@ -1,0 +1,113 @@
+/* Page layout */
+.authPage {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+}
+
+/* Light */
+.authPage.default {
+  background: #f4f6f8;
+}
+
+/* Dark */
+.authPage.corporate {
+  background: #0f172a;
+}
+
+/* Card */
+.authCard {
+  width: 360px;
+  padding: 30px;
+  border-radius: 14px;
+  transition: 0.3s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Light card */
+.authPage.default .authCard {
+  background: white;
+  color: black;
+}
+
+/* Dark card */
+.authPage.corporate .authCard {
+  background: #1e293b;
+  color: white;
+}
+
+/* Header */
+.authHeaderCenter {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.authHeaderCenter h1 {
+  font-size: 30px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.authHeaderCenter p {
+  font-size: 14px;
+  color: gray;
+}
+
+/* Inputs */
+.authCard input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Dark input fix */
+.authPage.corporate .authCard input {
+  background: #0f172a;
+  color: white;
+  border: 1px solid #334155;
+}
+
+/* Button */
+.authBtn {
+  width: 100%;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.authBtn:hover {
+  background: #1e4ed8;
+}
+
+/* Divider */
+.divider {
+  margin: 15px 0;
+  font-size: 12px;
+  color: gray;
+  text-align: center;
+}
+
+/* Google */
+.googleWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+/* Bottom text */
+.bottomText {
+  font-size: 14px;
+  text-align: center;
+}
+
+.bottomText a {
+  color: #2563eb;
+  text-decoration: none;
+}

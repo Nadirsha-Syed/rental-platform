@@ -1,35 +1,38 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const { authorizeRoles } = require("../middleware/roleMiddleware");
-const { protect } = require("../middleware/authMiddleware");
-
-const {
+ import { authorizeRoles } from "../middleware/roleMiddleware.js";
+ import { protect } from "../middleware/authMiddleware.js";
+import {
   createRentalItem,
   getRentalItems,
   getRentalById,
   updateRentalItem,
   deleteRentalItem,
-} = require("../controllers/rentalController");
+} from "../controllers/rentalController.js";
 
-router.post(
-  "/",
-  protect,
-  authorizeRoles("vendor", "admin"),
-  async (req, res, next) => {
-    if (req.user.role === "vendor" && !req.user.isApproved) {
-      return res.status(403).json({
-        message: "Vendor not approved by admin",
-      });
-    }
-    next();
-  },
-  createRentalItem
-);
+
+console.log("rental routes loaded");
+// router.post(
+//   "/",
+//   protect,
+//   authorizeRoles("vendor", "admin"),
+//   async (req, res, next) => {
+//     if (req.user.role === "vendor" && !req.user.isApproved) {
+//       return res.status(403).json({
+//         message: "Vendor not approved by admin",
+//       });
+//     }
+//     next();
+//   },
+//   createRentalItem
+// );
+
+router.post("/",protect, createRentalItem);
 
 router.get("/", getRentalItems);
 router.get("/:id", getRentalById);
 router.put("/:id", protect, updateRentalItem);
 router.delete("/:id", protect, deleteRentalItem);
 
-module.exports = router;
+export default router;
