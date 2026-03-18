@@ -1,5 +1,7 @@
 # Rental Platform (MERN)
 
+🚧 Actively being built and improved with new features
+
 A scalable multi-category rental backend system built using Node.js, Express, and MongoDB.
 
 This platform supports rentals for various asset types including:
@@ -290,36 +292,149 @@ Three themes implemented:
 
 ---
 
-# 📌 Upcoming Features
+## ✅ Day 14 – Frontend ↔ Backend Integration
 
-- Frontend ↔ Backend API integration
-- Frontend authentication flow
-- Booking UI integration
-- Razorpay payment integration
-- Admin analytics dashboard
-- Deployment (Render / Railway / AWS)
+### Features Implemented
+
+- Connected React frontend with Express backend APIs  
+- Integrated rental listing API (`GET /api/rentals`)  
+- Dynamic data rendering using React state  
+- API error handling and loading states  
+- Clean separation between UI and data layer  
+
+### Key Learnings
+
+- Handling async data flow in React  
+- Managing API states (loading, success, error)  
+- Debugging mismatched API responses  
+
+✔ Frontend successfully consuming real backend data  
 
 ---
 
-# 📊 Current Status
+## ✅ Day 15 – Rental Creation UI + Image Upload
 
-### Backend
-✔ Authentication system  
-✔ Rental module  
-✔ Owner-based authorization  
-✔ Booking system  
-✔ Conflict prevention  
-✔ Cancellation system  
-✔ Role-based access control  
-✔ Dashboard APIs  
+### Features Implemented
 
-### Frontend
-✔ React + Vite setup  
-✔ Dashboard layout  
-✔ Multi-theme system  
-✔ Glassmorphism UI  
-❌ Backend integration pending  
+- Add Rental form UI  
+- Cloudinary image upload integration  
+- Live image preview before upload  
+- Form state handling using React hooks  
+- Disabled submit until image upload completes  
 
+### Enhancements
+
+- Improved UX for image uploads  
+- Real-time feedback for users  
+
+✔ End-to-end rental creation flow completed  
+
+---
+
+## ✅ Day 16 – My Rentals Dashboard
+
+### Features Implemented
+
+- User-specific rental listings  
+- Conditional rendering based on ownership  
+- Navigation flow between pages  
+- Reusable ProductCard component  
+
+### Architecture Improvements
+
+- Component-based UI design  
+- Better state management across pages  
+
+✔ Users can now manage their own listings  
+
+---
+
+## ✅ Day 17 – Booking Flow UI Integration
+
+### Features Implemented
+
+- Booking UI connected to backend  
+- End-to-end booking flow  
+- Rental detail navigation  
+- Booking API integration  
+
+### Validation Handling
+
+- Prevent invalid booking inputs  
+- Error handling for failed bookings  
+
+✔ Full booking lifecycle visible from UI  
+
+---
+
+## ✅ Day 18 – Debugging & System Stabilization
+
+### Issues Resolved
+
+- JWT invalid signature errors  
+- Middleware execution flow issues  
+- Route conflicts and duplicate handlers  
+- Incorrect API responses (dummy/static data issues)  
+- Module system conflicts (CommonJS vs ES Modules)  
+- MongoDB connection inconsistencies  
+
+### Key Learnings
+
+- Importance of consistent module system (ESM)  
+- Debugging multi-layer issues (Frontend + Backend + DB)  
+- Verifying API responses independently  
+
+✔ System stabilized and running end-to-end  
+
+---
+
+## ✅ Day 19 – Final Integration & Testing
+
+### Final Checks
+
+- Verified all API endpoints  
+- Ensured correct DB connection  
+- Tested full user flow:
+  - Auth → Add Rental → View → Book  
+- Fixed state inconsistencies in frontend  
+
+✔ Application working as a complete full-stack system  
+
+---
+
+# 📊 UPDATED CURRENT STATUS
+
+### Backend  
+✔ Authentication system    
+✔ Rental module    
+✔ Owner-based authorization    
+✔ Booking system    
+✔ Conflict prevention    
+✔ Cancellation system    
+✔ Role-based access control    
+✔ Dashboard APIs    
+✔ Stable API responses    
+
+### Frontend  
+✔ React + Vite setup    
+✔ Dashboard layout    
+✔ Multi-theme system    
+✔ Glassmorphism UI    
+✔ Backend integration    
+✔ Rental creation UI    
+✔ Booking flow UI    
+✔ My Rentals dashboard    
+✔ API error handling    
+
+---
+
+# 🚀 NEXT PHASE
+
+- Edit / Delete Rentals UI  
+- Payment Integration (Razorpay)  
+- Deployment (Production Environment)  
+- Performance optimization  
+- UI/UX improvements
 ---
 
 ## 💡 Vision
