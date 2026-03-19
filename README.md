@@ -47,7 +47,12 @@ This platform supports rentals for various asset types including:
 - Cloud database integration (MongoDB Atlas)
 
 ---
-
+# Screenshots
+![Booking Page](screenshots/booking_page.png)
+![Rentals Page](screenshots/rentals.png)
+![Add Rental Page](screenshots/add_rental.png)
+![Login Page](screenshots/login.png)
+---
 # 📅 Development Log
 
 ---
