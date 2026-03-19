@@ -48,7 +48,7 @@ This platform supports rentals for various asset types including:
 
 ---
 # Screenshots
-![Booking Page](screenshots/Booking_page.png)
+![Booking Page](screenshots/booking_page.png)
 ![Rentals Page](screenshots/rentals.png)
 ![Add Rental Page](screenshots/add_rental.png)
 ![Login Page](screenshots/login.png)
