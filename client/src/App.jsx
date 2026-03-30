@@ -6,6 +6,7 @@ import AddRental from "./pages/AddRental";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import {GoogleOAuthProvider} from "@react-oauth/google";
+import MyRentals from "./pages/MyRentals";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/add-rental" element={<AddRental />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/my-rentals" element={<MyRentals />} />
     </Routes>
     </GoogleOAuthProvider>
   );

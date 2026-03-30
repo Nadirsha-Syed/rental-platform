@@ -1,10 +1,14 @@
+/* NAVBAR BASE */
+
 .nav {
   position: sticky;
   top: 0;
   z-index: 100;
 
-  background: rgb(var(--surface));
-  border-bottom: 1px solid rgb(var(--glass-border));
+  backdrop-filter: blur(12px); /* 🔥 glass effect */
+  background: rgba(var(--surface), 0.85);
+
+  border-bottom: 1px solid rgba(var(--glass-border), 0.4);
 }
 
 /* MAIN NAV LAYOUT */
@@ -15,7 +19,7 @@
   padding: 14px 24px;
 
   display: grid;
-  grid-template-columns: 200px 1fr auto; /* 🔥 FIX */
+  grid-template-columns: 180px 1fr auto;
   align-items: center;
   gap: 20px;
 }
@@ -27,6 +31,11 @@
   font-size: 20px;
   color: rgb(var(--text-main));
   text-decoration: none;
+  transition: 0.2s;
+}
+
+.logo:hover {
+  opacity: 0.8;
 }
 
 /* SEARCH */
@@ -43,14 +52,17 @@
   padding: 10px 16px;
   border-radius: 30px;
 
-  border: 1px solid rgb(var(--glass-border));
-  background: rgb(var(--surface));
+  border: 1px solid rgba(var(--glass-border), 0.5);
+  background: rgba(var(--surface), 0.9);
   color: rgb(var(--text-main));
+
+  transition: all 0.25s ease;
 }
 
 .searchInput:focus {
   outline: none;
   border-color: rgb(var(--color-primary));
+  box-shadow: 0 0 0 2px rgba(var(--color-primary), 0.2);
 }
 
 /* RIGHT SIDE */
@@ -59,7 +71,31 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 14px; /* 🔥 balanced spacing */
+  gap: 12px;
+}
+
+/* COMMON BUTTON STYLE */
+
+.navBtn,
+.loginBtn,
+.addBtn {
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+/* MY RENTALS */
+
+.navBtn {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgb(var(--text-main));
+}
+
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 /* ADD RENTAL BUTTON */
@@ -67,11 +103,52 @@
 .addBtn {
   background: rgb(var(--color-primary));
   color: white;
-  padding: 6px 14px;
-  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(var(--color-primary), 0.3);
+}
+
+.addBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(var(--color-primary), 0.4);
+}
+
+/* LOGIN */
+
+.loginBtn {
+  background: rgb(var(--color-primary));
+  color: white;
+}
+
+.loginBtn:hover {
+  opacity: 0.9;
+}
+
+/* USER BLOCK */
+
+.authBlock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userName {
+  color: rgb(var(--text-main));
   font-size: 14px;
-  text-decoration: none;
-  white-space: nowrap;
+}
+
+/* LOGOUT */
+
+.logoutBtn {
+  background: #ef4444;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logoutBtn:hover {
+  background: #dc2626;
 }
 
 /* THEME SWITCH */
@@ -79,11 +156,12 @@
 .themeSwitch {
   width: 46px;
   height: 24px;
-  background: rgba(150,150,150,0.4); /* 🔥 FIX visibility */
+  background: rgba(150, 150, 150, 0.4);
   border-radius: 20px;
   position: relative;
   border: none;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .themeSwitch.active {
@@ -105,26 +183,24 @@
   transform: translateX(22px);
 }
 
-/* USER */
+/* 🔥 RESPONSIVE DESIGN */
 
-.userName {
-  color: rgb(var(--text-main)); /* 🔥 FIX */
-  font-size: 14px;
-}
+@media (max-width: 768px) {
+  .navInner {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 
-.loginBtn {
-  background: rgb(var(--color-primary));
-  padding: 6px 12px;
-  border-radius: 6px;
-  color: white;
-  text-decoration: none;
-}
+  .searchWrap {
+    order: 3;
+  }
 
-.logoutBtn {
-  background: #ef4444;
-  color: white;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  .navActions {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .searchInput {
+    max-width: 100%;
+  }
 }

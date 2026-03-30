@@ -9,6 +9,7 @@ import {
   getRentalById,
   updateRentalItem,
   deleteRentalItem,
+  getMyRentals,
 } from "../controllers/rentalController.js";
 
 
@@ -29,7 +30,7 @@ console.log("rental routes loaded");
 // );
 
 router.post("/",protect, createRentalItem);
-
+router.get("/my", protect, getMyRentals); // NEW ROUTE
 router.get("/", getRentalItems);
 router.get("/:id", getRentalById);
 router.put("/:id", protect, updateRentalItem);
