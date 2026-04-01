@@ -1,66 +1,180 @@
 .productDetailsPage {
-  padding: 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  position: relative;
 }
 
 .productContainer {
   display: flex;
-  gap: 40px;
-  max-width: 1000px;
-  margin: auto;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* 🖼️ IMAGE SECTION */
+.imageSection {
+  width: 100% !important;
+  height: 300px !important; 
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0; 
+  background: rgba(var(--text-muted) / 0.1);
 }
 
 .imageSection img {
-  width: 400px;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 12px;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important; 
+  display: block;
 }
 
+/* 📝 INFO SECTION */
 .infoSection {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
-.price {
-  font-size: 22px;
-  font-weight: bold;
-  color: green;
+.infoSection h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: rgb(var(--text-main));
+  margin: 0;
 }
 
+.location {
+  color: rgb(var(--text-muted));
+  font-size: 15px;
+}
+
+.priceTag {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(var(--color-primary));
+}
+
+.priceTag span {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(var(--text-muted));
+}
+
+/* 💳 BOOKING CARD */
 .bookingBox {
-  margin-top: 20px;
+  background: rgb(var(--surface));
+  border: 1px solid rgba(var(--glass-border) / 0.4);
+  padding: 24px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
+  position: relative;
+  z-index: 5;
 }
 
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative; /* Needed for custom icon positioning */
+}
+
+.inputGroup label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(var(--text-muted));
+}
+
+/* 🕒 CLICK-ANYWHERE INPUT FIX */
 .bookingBox input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(var(--glass-border) / 0.6);
+  background: rgba(var(--surface) / 0.5);
+  color: rgb(var(--text-main));
+  font-size: 15px;
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-.estimate {
-  font-weight: bold;
-  margin-top: 10px;
+/* 🔥 The "Secret Sauce": Stretch the picker indicator to fill the whole box */
+.bookingBox input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0; /* Hide the native icon because it's now stretched and ugly */
+}
+
+/* Add a clean custom calendar icon back since we hid the native one */
+.inputGroup::after {
+  content: '📅';
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  font-size: 14px;
+  pointer-events: none; /* Clicks pass through to the input below */
+  opacity: 0.6;
+}
+
+.priceSummary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(var(--glass-border) / 0.5);
+}
+
+.totalAmount {
+  font-size: 22px;
+  font-weight: 700;
+  color: rgb(var(--text-main));
 }
 
 .bookBtn {
-  margin-top: 10px;
-  padding: 12px;
-  background-color: #2563eb;
+  background: rgb(var(--color-primary));
   color: white;
+  padding: 16px;
+  border-radius: 12px;
   border: none;
-  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .bookBtn:hover {
-  background-color: #1e40af;
+  filter: brightness(1.1);
 }
 
-/* date time input oolor to black */
-.bookingBox input[type="datetime-local"] {
-  color: black;
+/* 🖥️ DESKTOP FIX */
+@media (min-width: 850px) {
+  .productContainer {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .imageSection {
+    flex: 1.2;
+    height: 500px !important;
+  }
+
+  .infoSection {
+    flex: 1;
+    position: sticky;
+    top: 100px;
+  }
 }

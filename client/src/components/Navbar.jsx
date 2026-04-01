@@ -1,26 +1,36 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react"; // Added useEffect
 import { ThemeContext } from "../context/ThemeContext";
 import "./Navbar.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Added useLocation
 
 export default function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
+  const location = useLocation(); // Used to trigger check on page change
 
   const [search, setSearch] = useState("");
+  const [user, setUser] = useState(null); // Move user to State
 
-  // ✅ SAFE USER PARSE (FIXED)
-  let user = null;
-  try {
-    const storedUser = localStorage.getItem("user");
-    console.log(" user :", user); // 🔥 debug
-    if (storedUser && storedUser !== "undefined") {
-      user = JSON.parse(storedUser);
-    }
-  } catch (err) {
-    console.error("User parse error:", err);
-    user = null;
-  }
+  // 🔄 Sync User state with LocalStorage
+  useEffect(() => {
+    const checkUser = () => {
+      try {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser && storedUser !== "undefined") {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          console.log("Navbar: User detected ->", parsedUser.name);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("User parse error:", err);
+        setUser(null);
+      }
+    };
+
+    checkUser();
+  }, [location]); // Re-run this check whenever the URL route changes
 
   const toggleTheme = () => {
     setTheme(theme === "default" ? "corporate" : "default");
@@ -29,15 +39,15 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    setUser(null); // Clear state immediately
     navigate("/login");
   };
 
-  // 🔎 Handle Search
   const handleSearch = (e) => {
     e.preventDefault();
     if (search.trim()) {
       navigate(`/products?search=${search}`);
-      setSearch(""); // 🔥 clear input
+      setSearch(""); 
     }
   };
 
@@ -77,6 +87,13 @@ export default function Navbar() {
               + Add Rental
             </Link>
           )}
+
+         {/* 📊 Dashboard Button */}
+{user && (
+  <Link to="/owner-dashboard" className="navBtn dashboardBtn">
+    Dashboard
+  </Link>
+)}
 
           {/* 🔐 Auth Section */}
           {user ? (

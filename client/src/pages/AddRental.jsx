@@ -2,9 +2,8 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
-
 export default function AddRental() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
     location: "",
@@ -15,166 +14,157 @@ export default function AddRental() {
   });
 
   const [preview, setPreview] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleImage = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  console.log("File selected:", file);
+    setPreview(URL.createObjectURL(file));
+    setIsUploading(true);
 
-  setPreview(URL.createObjectURL(file));
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "rental_upload");
 
-  const data = new FormData();
-  data.append("file", file);
-  data.append("upload_preset", "rental_upload");
+    try {
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/djq5txr9a/image/upload",
+        { method: "POST", body: data }
+      );
+      const result = await res.json();
 
-  try {
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/djq5txr9a/image/upload",
-      {
-        method: "POST",
-        body: data,
+      if (result.secure_url) {
+        setForm((prev) => ({ ...prev, image: result.secure_url }));
       }
-    );
-
-    console.log("Response status:", res.status);
-
-    const result = await res.json();
-    console.log("Cloudinary FULL response:", result);
-
-    if (result.secure_url) {
-      setForm((prev) => ({
-        ...prev,
-        image: result.secure_url,
-      }));
-    } else {
-      console.error("No URL returned!");
+    } catch (err) {
+      console.error("Upload error:", err);
+    } finally {
+      setIsUploading(false);
     }
-
-  } catch (err) {
-    console.error("Upload error:", err);
-  }
-};
+  };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const user = JSON.parse(localStorage.getItem("user")); // 🔥 GET USER
+    // 🔑 THE FIX: Try to get token directly, or from the user object
+    const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
 
-  console.log("USER FROM STORAGE:", user);
-
-  try {
-    console.log("token being sent:", user?.token); // Debugging log
-    const res = await fetch("http://localhost:5000/api/rentals", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.token}`, // 🔥 THIS IS THE FIX
-      },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-    console.log("Response:", data);
-
-    if (res.ok) {
-      alert("Rental Added 🚀");
-      navigate("/products");
-    } else {
-      alert(data.message || "Error adding rental");
+    if (!token) {
+      alert("Session expired. Please login again.");
+      navigate("/login");
+      return;
     }
 
-  } catch (err) {
-    console.error(err);
-    alert("Server error");
-  }
-};
+    try {
+      const res = await fetch("http://localhost:5000/api/rentals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // Standard Bearer format
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Rental Added 🚀");
+        navigate("/products");
+      } else {
+        // If backend returns "Token failed", this alert triggers
+        alert(data.message || "Error adding rental");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
+    }
+  };
+
   return (
     <>
-    <Navbar />
-    <div className="max-w-5xl mx-auto mt-10 grid grid-cols-2 gap-10">
-
-      {/* LEFT - IMAGE */}
-      <div className="border-2 border-dashed border-gray-400 rounded-xl flex items-center justify-center h-[350px] relative">
-
-        {preview ? (
-          <img
-            src={preview}
-            alt="preview"
-            className="object-cover w-full h-full rounded-xl"
+      <Navbar />
+      <div className="max-w-5xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
+        
+        {/* LEFT - IMAGE UPLOAD */}
+        <div className="border-2 border-dashed border-gray-400 rounded-xl flex items-center justify-center h-[350px] relative bg-gray-50 overflow:hidden">
+          {preview ? (
+            <img src={preview} alt="preview" className="object-cover w-full h-full rounded-xl" />
+          ) : (
+            <div className="text-center">
+              <p className="text-gray-500">📸 Click to upload image</p>
+            </div>
+          )}
+          <input
+            type="file"
+            onChange={handleImage}
+            className="absolute inset-0 opacity-0 cursor-pointer"
           />
-        ) : (
-          <p className="text-gray-500">Click to upload image</p>
-        )}
+        </div>
 
-        <input
-          type="file"
-          onChange={handleImage}
-          className="absolute inset-0 opacity-0 cursor-pointer"
-        />
+        {/* RIGHT - FORM */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            name="title"
+            required
+            placeholder="Rental title (e.g. Sony A7III)"
+            className="border p-3 rounded-lg bg-white text-black outline-none focus:ring-2 focus:ring-indigo-500"
+            onChange={handleChange}
+          />
 
+          <input
+            name="location"
+            required
+            placeholder="Location (e.g. Warangal)"
+            className="border p-3 rounded-lg bg-white text-black outline-none focus:ring-2 focus:ring-indigo-500"
+            onChange={handleChange}
+          />
+
+          <input
+            name="pricePerHour"
+            type="number"
+            required
+            placeholder="Price per hour (₹)"
+            className="border p-3 rounded-lg bg-white text-black outline-none focus:ring-2 focus:ring-indigo-500"
+            onChange={handleChange}
+          />
+
+          <textarea
+            name="description"
+            required
+            placeholder="Tell us about the item..."
+            rows="3"
+            className="border p-3 rounded-lg bg-white text-black outline-none focus:ring-2 focus:ring-indigo-500"
+            onChange={handleChange}
+          />
+
+          <select
+            name="category"
+            required
+            className="border p-3 rounded-lg bg-white text-black outline-none"
+            onChange={handleChange}
+          >
+            <option value="">Select Category</option>
+            <option value="camera">Camera</option>
+            <option value="bike">Bike</option>
+            <option value="tools">Tools</option>
+            <option value="car">Car</option>
+            <option value="agri-tool">Agri-tool</option>
+          </select>
+
+          <button
+            type="submit"
+            disabled={isUploading || !form.image}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isUploading ? "Uploading to Cloud..." : "Add Rental Listing"}
+          </button>
+        </form>
       </div>
-
-      {/* RIGHT - FORM */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
-        <input
-          name="title"
-          placeholder="Rental title"
-          className="border p-3 rounded-lg bg-white text-black"
-          onChange={handleChange}
-        />
-
-        <input
-          name="location"
-          placeholder="Location"
-          className="border p-3 rounded-lg bg-white text-black"
-          onChange={handleChange}
-        />
-
-        <input
-          name="pricePerHour"
-          placeholder="Price per hour"
-          className="border p-3 rounded-lg bg-white text-black"
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="description"
-          placeholder="Description"
-          className="border p-3 rounded-lg bg-white text-black"
-          onChange={handleChange}
-        />
-
-        <select
-      name="category"
-      className="border p-3 rounded-lg bg-white text-black"
-      onChange={handleChange}>
-      <option value="">Select Category</option>
-      {/* car", "bike", "agri-tool", "camera","tools */}
-      <option value="camera">Camera</option>
-      <option value="bike">Bike</option>
-      <option value="tools">Tools</option>
-      </select>
-
-        <button
-  type="submit"
-  disabled={!form.image}
-  className="bg-primary text-white py-3 rounded-lg disabled:opacity-50"
->
-  {form.image ? "Add Rental" : "Uploading image..."}
-</button>
-
-      </form>
-
-    </div>
-  </>
+    </>
   );
 }

@@ -1,49 +1,114 @@
-.products {
-  padding: 40px 60px;
-}
-
-/* Header */
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.topbar h1 {
-  font-size: 28px;
-  color: var(--textMain);
-}
-
-/* Search */
-
-.search {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: 1px solid var(--glassBorder);
-  background: var(--surface);
-  color: var(--textMain);
-  width: 240px;
-  outline: none;
-}
-
-/* Product Grid */
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 28px;
-}
-
+/* CONTAINER */
 .page {
   max-width: 1200px;
-  margin: auto;
-  padding: 24px;
+  margin: 0 auto;
+  padding: 40px 24px;
 }
 
 .title {
-  font-size: 1.8rem;
-  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 2rem;
   color: rgb(var(--text-main));
+}
+
+/* THE GRID - Forces side-by-side alignment */
+.grid {
+  display: grid !important;
+  /* 4 cards on PC, 2 on tablet, 1 on mobile */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+  gap: 32px 24px !important;
+  width: 100%;
+}
+
+/* THE CARD - Modest & Clean */
+.card {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover {
+  opacity: 0.8; /* Subtle hover effect instead of giant lift */
+}
+
+/* 🖼️ IMAGE FIX - ASPECT RATIO */
+.thumb {
+  width: 100% !important;
+  height: 200px !important; /* Fixed height for consistency */
+  border-radius: 12px; /* Soft corners like Airbnb */
+  overflow: hidden;
+  position: relative;
+  background: #f3f4f6;
+  margin-bottom: 12px;
+}
+
+.thumb img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important; /* Forces image to fill the box without stretching */
+}
+
+/* 🏷️ SIMPLE BADGE */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: white;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* CONTENT BOX */
+.meta {
+  padding: 0 !important; /* Modest style: no internal padding needed if card has no border */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(var(--text-main));
+}
+
+.loc {
+  font-size: 14px;
+  color: rgb(var(--text-muted));
+  margin: 0;
+}
+
+/* PRICE & ROW */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.price {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgb(var(--text-main));
+}
+
+.price span {
+  font-weight: 400;
+  font-size: 13px;
+  color: rgb(var(--text-muted));
+}
+
+.viewLink {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(var(--color-primary));
 }

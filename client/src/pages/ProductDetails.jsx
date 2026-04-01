@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 
 export default function ProductDetails() {
   const { productId } = useParams();
-
   const [product, setProduct] = useState(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -21,19 +20,34 @@ export default function ProductDetails() {
   // Calculate price
   useEffect(() => {
     if (startTime && endTime && product) {
-      const hours =
-        (new Date(endTime) - new Date(startTime)) / (1000 * 60 * 60);
-
+      const hours = (new Date(endTime) - new Date(startTime)) / (1000 * 60 * 60);
       if (hours > 0) {
-        setEstimatedPrice(hours * product.pricePerHour);
+        setEstimatedPrice(Math.round(hours * product.pricePerHour));
       }
     }
   }, [startTime, endTime, product]);
 
-  // Handle booking
+  // Handle booking with AUTHORIZATION
   const handleBooking = async () => {
-    if (!startTime || !endTime) {
-      alert("Please select time");
+    const token = localStorage.getItem("token"); // 🔑 Get your saved token
+
+    if (!token) {
+      alert("Please login to book this item");
+      return;
+    }
+
+    // 🔍 DEBUG: See exactly what we are about to send
+    const bookingData = {
+      rentalItemId: product._id, // Ensure your backend expects "rentalItem"
+      startTime: startTime,
+      endTime: endTime,
+      totalPrice: Number(estimatedPrice), // Ensure it's a number
+    };
+
+    console.log("Payload being sent:", bookingData);
+
+    if (!startTime || !endTime || estimatedPrice <= 0) {
+      alert("Please select a valid time range");
       return;
     }
 
@@ -42,9 +56,10 @@ export default function ProductDetails() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // ✅ Fixed: Sends token to backend
         },
         body: JSON.stringify({
-          rentalItem: product._id, // ✅ match backend
+          rentalItemId: product._id,
           startTime,
           endTime,
           totalPrice: estimatedPrice,
@@ -52,65 +67,60 @@ export default function ProductDetails() {
       });
 
       const data = await res.json();
-
       if (res.ok) {
         alert("Booking Successful ✅");
       } else {
-        alert(data.message);
+        console.error("Server Error Detail:", data);
+        alert(data.message || "Booking failed");
       }
     } catch (err) {
       console.error(err);
+      alert("Server error, please try again");
     }
   };
 
-  if (!product) return <p>Loading...</p>;
+  if (!product) return <p className="loading">Loading...</p>;
 
   return (
     <>
       <Navbar />
-
       <div className="productDetailsPage">
         <div className="productContainer">
-
-          {/* LEFT */}
+          
+          {/* 🖼️ Fixed Image Section */}
           <div className="imageSection">
             <img src={product.image} alt={product.title} />
           </div>
 
-          {/* RIGHT */}
+          {/* 📝 Aligned Info Section */}
           <div className="infoSection">
             <h1>{product.title}</h1>
-
-            <p className="location">📍 {product.location}</p>
-
-            <p className="price">₹{product.pricePerHour}/hr</p>
-
+            <p className="location">📍 {product.location || "No location"}</p>
+            <p className="priceTag">₹{product.pricePerHour}<span>/hr</span></p>
             <p className="description">{product.description}</p>
 
-            {/* BOOKING UI */}
             <div className="bookingBox">
-              <label>Start Time</label>
-              <input
-                type="datetime-local" 
-                onChange={(e) => setStartTime(e.target.value)}
-              />
+              <div className="inputGroup">
+                <label>Start Time</label>
+                <input type="datetime-local" onChange={(e) => setStartTime(e.target.value)} />
+              </div>
 
-              <label>End Time</label>
-              <input
-                type="datetime-local"
-                onChange={(e) => setEndTime(e.target.value)}
-              />
+              <div className="inputGroup">
+                <label>End Time</label>
+                <input type="datetime-local" onChange={(e) => setEndTime(e.target.value)} />
+              </div>
 
-              <p className="estimate">
-                Estimated Price: ₹{estimatedPrice}
-              </p>
+              <div className="priceSummary">
+                <span>Estimated Total:</span>
+                <span className="totalAmount">₹{estimatedPrice}</span>
+              </div>
 
               <button className="bookBtn" onClick={handleBooking}>
                 Book Now
               </button>
             </div>
-
           </div>
+
         </div>
       </div>
     </>

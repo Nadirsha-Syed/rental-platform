@@ -12,7 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // 🔐 Standard Email/Password Login
+  // 🔐 Email login
   const handleLogin = async () => {
     try {
       if (!email || !password) {
@@ -22,69 +22,65 @@ export default function Login() {
 
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const authResult = await response.json();
+      const result = await response.json();
 
-      // Log this to see exactly what your backend is sending
-      console.log("LOGIN ATTEMPT RESULT:", authResult);
+      console.log("LOGIN API RESPONSE:", result); // Look at this in your browser console!
 
       if (response.ok) {
-        // Double check: does authResult.user actually exist?
-        if (authResult.token && authResult.user) {
-          localStorage.setItem("token", authResult.token);
-          localStorage.setItem("user", JSON.stringify(authResult.user));
-          navigate("/products");
+        localStorage.setItem("token", result.token);
+        
+        // Safety check to prevent storing the string "undefined"
+        if (result.user) {
+          localStorage.setItem("user", JSON.stringify(result.user));
         } else {
-          console.error("Backend success but missing data keys. Check if it's authResult.data.user");
-          alert("Login successful, but user profile was not found.");
+          console.warn("User object is missing in backend response!");
         }
+
+        navigate("/products");
       } else {
-        alert(authResult.message || "Invalid email or password");
+        alert(result.message || "Login failed");
       }
     } catch (err) {
-      console.error("NETWORK ERROR:", err);
-      alert("Server is not responding. Please try again later.");
+      console.error("LOGIN ERROR:", err);
     }
   };
 
-  // 🔐 Google Login Logic
+  // 🔐 Google login
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const response = await fetch("http://localhost:5000/api/auth/google", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          token: credentialResponse.credential, // The JWT from Google
+          token: credentialResponse.credential,
         }),
       });
 
-      const authResult = await response.json();
+      const result = await response.json();
 
-      console.log("GOOGLE AUTH RESULT:", authResult);
+      console.log("GOOGLE API RESPONSE:", result); // Look at this in your browser console!
 
-      if (response.ok) {
-        // Ensure user data exists before storing
-        if (authResult.user) {
-          localStorage.setItem("token", authResult.token);
-          localStorage.setItem("user", JSON.stringify(authResult.user));
-          navigate("/products");
-        } else {
-          alert("Google login worked, but we couldn't create your profile.");
-        }
-      } else {
-        // This triggers if your backend (authController) returns a status like 400 or 500
-        alert(authResult.message || "Google authentication failed on our server.");
+      if (!response.ok) {
+        alert(result.message || "Google login failed on server");
+        return;
       }
+
+      localStorage.setItem("token", result.token);
+      
+      // Safety check
+      if (result.user) {
+        localStorage.setItem("user", JSON.stringify(result.user));
+      } else {
+        console.warn("User data missing from Google response");
+      }
+
+      navigate("/products");
     } catch (err) {
-      console.error("GOOGLE CONNECTION ERROR:", err);
-      alert("Failed to connect for Google Login.");
+      console.log("GOOGLE LOGIN ERROR:", err);
     }
   };
 
@@ -105,7 +101,6 @@ export default function Login() {
           <input
             type="email"
             placeholder="Enter email"
-            className="authInput" // Added a clear class if you need it
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -113,7 +108,6 @@ export default function Login() {
           <input
             type="password"
             placeholder="Enter password"
-            className="authInput"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -127,7 +121,7 @@ export default function Login() {
           <div className="googleWrap">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
-              onError={() => alert("Google login failed. Try again.")}
+              onError={() => console.log("Google login failed")}
             />
           </div>
 
