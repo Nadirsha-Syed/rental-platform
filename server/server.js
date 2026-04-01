@@ -10,10 +10,10 @@ import authRoutes from "./routes/authRoutes.js";
 connectDB();
 
 const app = express();
+app.use(express.json());
 
 // Middleware
 app.use(cors());
-app.use(express.json());
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/rentals", rentalRoutes);
