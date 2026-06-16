@@ -8,10 +8,11 @@ const rentalItemSchema = mongoose.Schema(
     },
 
     category: {
-      type: String,
-      required: true,
-      enum: ["car", "bike", "agri-tool", "camera", "tools"],
-    },
+  type: String,
+  required: true,
+  // 🔽 Update this array to match your new frontend dropdowns exactly!
+  enum: ["Electronics", "Bikes", "Books", "Tools"] 
+},
 
     description: {
       type: String,

@@ -10,7 +10,7 @@ export default function AddRental() {
     pricePerHour: "",
     description: "",
     image: "",
-    category: ""
+    category: "Electronics" // 🔥 Changed default from "" to a valid string matching your schema/filter options
   });
 
   const [preview, setPreview] = useState("");
@@ -51,7 +51,6 @@ export default function AddRental() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔑 THE FIX: Try to get token directly, or from the user object
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
 
     if (!token) {
@@ -65,7 +64,7 @@ export default function AddRental() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Standard Bearer format
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(form),
       });
@@ -76,7 +75,6 @@ export default function AddRental() {
         alert("Rental Added 🚀");
         navigate("/products");
       } else {
-        // If backend returns "Token failed", this alert triggers
         alert(data.message || "Error adding rental");
       }
     } catch (err) {
@@ -91,7 +89,7 @@ export default function AddRental() {
       <div className="max-w-5xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
         
         {/* LEFT - IMAGE UPLOAD */}
-        <div className="border-2 border-dashed border-gray-400 rounded-xl flex items-center justify-center h-[350px] relative bg-gray-50 overflow:hidden">
+        <div className="border-2 border-dashed border-gray-400 rounded-xl flex items-center justify-center h-[350px] relative bg-gray-50 overflow-hidden">
           {preview ? (
             <img src={preview} alt="preview" className="object-cover w-full h-full rounded-xl" />
           ) : (
@@ -142,18 +140,18 @@ export default function AddRental() {
             onChange={handleChange}
           />
 
+          {/* 📂 Syncing values exactly with ProductsPage.jsx */}
           <select
             name="category"
+            value={form.category}
             required
             className="border p-3 rounded-lg bg-white text-black outline-none"
             onChange={handleChange}
           >
-            <option value="">Select Category</option>
-            <option value="camera">Camera</option>
-            <option value="bike">Bike</option>
-            <option value="tools">Tools</option>
-            <option value="car">Car</option>
-            <option value="agri-tool">Agri-tool</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Bikes">Bikes</option>
+            <option value="Books">Books</option>
+            <option value="Tools">Tools</option>
           </select>
 
           <button

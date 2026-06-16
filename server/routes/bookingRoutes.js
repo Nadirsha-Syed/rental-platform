@@ -1,33 +1,27 @@
-const express = require("express");
-const router = express.Router();
-const { 
+import express from "express";
+import { 
   createBooking, 
   cancelBooking, 
   getMyBookings, 
   getBookingsForMyRentals, 
   getOwnerRevenue, 
   confirmBooking 
-} = require("../controllers/bookingController");
-const { protect } = require("../middleware/authMiddleware");
+} from "../controllers/bookingController.js"; // ⚠️ Note the .js extension for ES Modules
+import { protect } from "../middleware/authMiddleware.js";
 
-// 1. General Booking Routes
+const router = express.Router();
+
+// 🎫 1. General Booking & Borrower Routes
 router.post("/", protect, createBooking);
 router.get("/my-bookings", protect, getMyBookings);
+
+// 🎛️ 2. Owner Approval Handlers (PUT endpoints)
 router.put("/:id/confirm", protect, confirmBooking);
 router.put("/:id/cancel", protect, cancelBooking);
 
-// 2. Owner/P2P Dashboard Routes (RESTRICTION REMOVED)
-// We removed 'authorizeRoles' so any logged-in user can see their own stats
+// 📊 3. Owner/P2P Dashboard Aggregations
+// Removed 'authorizeRoles' middleware so any registered user can naturally act as a lender
 router.get("/owner-bookings", protect, getBookingsForMyRentals);
 router.get("/owner-revenue", protect, getOwnerRevenue);
 
-module.exports = router;
-// router.put("/:id/confirm", protect, confirmBooking);
-// router.get(
-//   "/owner-revenue",
-//   protect,
-//   authorizeRoles("vendor", "admin"),
-//   getOwnerRevenue
-// );
-
-
+export default router;

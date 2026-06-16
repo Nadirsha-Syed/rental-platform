@@ -1,36 +1,81 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import "./OwnerDashboard.css"; // Ensure you create this CSS file
+import "./OwnerDashboard.css";
 
 export default function OwnerDashboard() {
   const [stats, setStats] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 🔄 Moved out of useEffect so we can refresh the data grid after an Accept/Reject action
+  const fetchDashboardData = async () => {
+    const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
+    try {
+      const statsRes = await fetch("http://localhost:5000/api/bookings/owner-revenue", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const statsData = await statsRes.json();
+      setStats(statsData);
+
+      const bookingsRes = await fetch("http://localhost:5000/api/bookings/owner-bookings", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const bookingsData = await bookingsRes.json();
+      setBookings(bookingsData);
+    } catch (err) {
+      console.error("Dashboard fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const statsRes = await fetch("http://localhost:5000/api/bookings/owner-revenue", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        const statsData = await statsRes.json();
-        setStats(statsData);
-
-        const bookingsRes = await fetch("http://localhost:5000/api/bookings/owner-bookings", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        const bookingsData = await bookingsRes.json();
-        setBookings(bookingsData);
-      } catch (err) {
-        console.error("Dashboard fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchDashboardData();
   }, []);
+
+  // 🟢 Handle Booking Approval
+  const handleConfirm = async (bookingId) => {
+    const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
+    try {
+      const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/confirm`, {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        alert("Booking Confirmed! 🟢");
+        fetchDashboardData(); // 🔄 Instantly refresh stats and list
+      } else {
+        const data = await res.json();
+        alert(data.message || "Failed to confirm booking");
+      }
+    } catch (err) {
+      console.error("Confirm Error:", err);
+    }
+  };
+
+  // 🔴 Handle Booking Rejection
+  const handleCancel = async (bookingId) => {
+    if (!window.confirm("Are you sure you want to reject this booking request?")) return;
+
+    const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
+    try {
+      const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        alert("Booking Rejected 🔴");
+        fetchDashboardData(); // 🔄 Instantly refresh stats and list
+      } else {
+        const data = await res.json();
+        alert(data.message || "Failed to reject booking");
+      }
+    } catch (err) {
+      console.error("Cancel Error:", err);
+    }
+  };
 
   if (loading) return <div className="loading-state">Loading Dashboard...</div>;
 
@@ -72,6 +117,7 @@ export default function OwnerDashboard() {
                   <th>Customer</th>
                   <th>Date & Time</th>
                   <th>Total Earned</th>
+                  <th style={{ textAlign: "right" }}>Status / Actions</th> {/* 🔥 Added header column */}
                 </tr>
               </thead>
               <tbody>
@@ -79,13 +125,44 @@ export default function OwnerDashboard() {
                   <tr key={booking._id} className="table-body-row">
                     <td className="item-cell">{booking.rentalItem?.title}</td>
                     <td className="customer-cell">
-                      <div className="customer-name">{booking.user?.name}</div>
-                      <div className="customer-email">{booking.user?.email}</div>
+                      <div className="customer-name">{booking.user?.name || "Promptedin"}</div>
+                      <div className="customer-email">{booking.user?.email || "promptedin@gmail.com"}</div>
                     </td>
                     <td className="date-cell">
                       {new Date(booking.startTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                     </td>
                     <td className="amount-cell">₹{booking.totalPrice}</td>
+                    
+                    {/* 🔥 CONDITIONAL INTERACTIVE BUTTONS CELL */}
+                    <td style={{ textAlign: "right" }}>
+                      {booking.status === "pending" ? (
+                        <div style={{ display: "inline-flex", gap: "8px" }}>
+                          <button 
+                            onClick={() => handleConfirm(booking._id)}
+                            style={{ backgroundColor: "#10B981", color: "white", padding: "6px 12px", borderRadius: "6px", border: "none", cursor: "pointer", fontWeight: "600" }}
+                          >
+                            Accept
+                          </button>
+                          <button 
+                            onClick={() => handleCancel(booking._id)}
+                            style={{ backgroundColor: "#EF4444", color: "white", padding: "6px 12px", borderRadius: "6px", border: "none", cursor: "pointer", fontWeight: "600" }}
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <span style={{ 
+                          fontWeight: "700", 
+                          color: booking.status === "confirmed" ? "#10B981" : "#EF4444",
+                          textTransform: "uppercase",
+                          fontSize: "0.85rem",
+                          letterSpacing: "0.05em"
+                        }}>
+                          {booking.status}
+                        </span>
+                      )}
+                    </td>
+
                   </tr>
                 ))}
               </tbody>

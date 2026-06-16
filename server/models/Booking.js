@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose"; // 🔥 Switched to ES Module import
 
 const bookingSchema = new mongoose.Schema(
   {
@@ -24,21 +24,25 @@ const bookingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-   status: {
-  type: String,
-  enum: ["pending", "confirmed", "cancelled", "completed", "expired"],
-  default: "pending"
-},
-expiresAt: {
-  type: Date
-},
-paymentStatus: {
-  type: String,
-  enum: ["unpaid", "paid", "failed", "refunded"],
-  default: "unpaid"
-},
+    status: {
+      type: String,
+      // 🟢 "pending" -> Owner needs to Accept/Reject
+      // 🟢 "confirmed" -> Owner approved it
+      // 🟢 "cancelled" -> Owner rejected it or borrower backed out
+      enum: ["pending", "confirmed", "cancelled", "completed", "expired"],
+      default: "pending",
+    },
+    expiresAt: {
+      type: Date,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["unpaid", "paid", "failed", "refunded"],
+      default: "unpaid",
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Booking", bookingSchema);
+// 🔥 Switched to ES Module default export
+export default mongoose.model("Booking", bookingSchema);

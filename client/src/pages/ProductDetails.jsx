@@ -9,6 +9,7 @@ export default function ProductDetails() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [estimatedPrice, setEstimatedPrice] = useState(0);
+  const [loadingBooking, setLoadingBooking] = useState(false); // 🔥 Added to track submission states
 
   // Fetch product
   useEffect(() => {
@@ -27,36 +28,30 @@ export default function ProductDetails() {
     }
   }, [startTime, endTime, product]);
 
-  // Handle booking with AUTHORIZATION
+  // Handle booking with AUTHORIZATION & DOUBLE-SUBMIT PROTECTION
   const handleBooking = async () => {
-    const token = localStorage.getItem("token"); // 🔑 Get your saved token
+    const token = localStorage.getItem("token"); 
 
     if (!token) {
       alert("Please login to book this item");
       return;
     }
 
-    // 🔍 DEBUG: See exactly what we are about to send
-    const bookingData = {
-      rentalItemId: product._id, // Ensure your backend expects "rentalItem"
-      startTime: startTime,
-      endTime: endTime,
-      totalPrice: Number(estimatedPrice), // Ensure it's a number
-    };
-
-    console.log("Payload being sent:", bookingData);
-
     if (!startTime || !endTime || estimatedPrice <= 0) {
       alert("Please select a valid time range");
       return;
     }
+
+    // 🔒 THE FIX: Prevent execution if a request is already processing
+    if (loadingBooking) return; 
+    setLoadingBooking(true); 
 
     try {
       const res = await fetch("http://localhost:5000/api/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // ✅ Fixed: Sends token to backend
+          "Authorization": `Bearer ${token}`, 
         },
         body: JSON.stringify({
           rentalItemId: product._id,
@@ -68,7 +63,8 @@ export default function ProductDetails() {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Booking Successful ✅");
+        // Updated text alert to properly fit the P2P approval update style
+        alert("Booking Request Sent Successfully! 🚀 Awaiting owner approval.");
       } else {
         console.error("Server Error Detail:", data);
         alert(data.message || "Booking failed");
@@ -76,6 +72,8 @@ export default function ProductDetails() {
     } catch (err) {
       console.error(err);
       alert("Server error, please try again");
+    } finally {
+      setLoadingBooking(false); // 🔓 Unfreeze the button once the process resolves
     }
   };
 
@@ -87,12 +85,12 @@ export default function ProductDetails() {
       <div className="productDetailsPage">
         <div className="productContainer">
           
-          {/* 🖼️ Fixed Image Section */}
+          {/* 🖼️ Image Section */}
           <div className="imageSection">
             <img src={product.image} alt={product.title} />
           </div>
 
-          {/* 📝 Aligned Info Section */}
+          {/* 📝 Info Section */}
           <div className="infoSection">
             <h1>{product.title}</h1>
             <p className="location">📍 {product.location || "No location"}</p>
@@ -115,8 +113,14 @@ export default function ProductDetails() {
                 <span className="totalAmount">₹{estimatedPrice}</span>
               </div>
 
-              <button className="bookBtn" onClick={handleBooking}>
-                Book Now
+              {/* 🚫 Disabled attribute dynamically binds to state to prevent clicking spam */}
+              <button 
+                className="bookBtn" 
+                onClick={handleBooking}
+                disabled={loadingBooking}
+                style={{ opacity: loadingBooking ? 0.6 : 1, cursor: loadingBooking ? "not-allowed" : "pointer" }}
+              >
+                {loadingBooking ? "Sending Request..." : "Book Now"}
               </button>
             </div>
           </div>

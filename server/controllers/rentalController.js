@@ -29,15 +29,31 @@ export const createRentalItem = async (req, res) => {
   }
 };
 
-// ✅ Get All Rental Items (With Filters)
+// ✅ Get All Rental Items (With Search & Dropdown Filters)
 export const getRentalItems = async (req, res) => {
   try {
-    const { category, location } = req.query;
+    const { search, category, location } = req.query;
 
     let filter = {};
 
-    if (category) filter.category = category;
-    if (location) filter.location = location;
+    // 🔍 1. Fuzzy Text Search (Looks into Title OR Description)
+    if (search && search.trim() !== "") {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },        // "i" means case-insensitive
+        { description: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    // 📂 2. Dropdown Category Filter
+    if (category && category !== "All") {
+      filter.category = category;
+    }
+
+    // 📍 3. Dropdown Location Filter (Update this block)
+if (location && location !== "All") {
+  // Using $regex with $options: "i" forces MongoDB to ignore Capitalization completely!
+  filter.location = { $regex: `^${location}$`, $options: "i" };
+}
 
     const rentals = await RentalItem.find(filter)
       .populate("owner", "name email")
@@ -50,7 +66,7 @@ export const getRentalItems = async (req, res) => {
   }
 };
 
-// ✅ 🔥 Get My Rentals (NEW)
+// ✅ 🔥 Get My Rentals
 export const getMyRentals = async (req, res) => {
   try {
     const rentals = await RentalItem.find({ owner: req.user._id })
