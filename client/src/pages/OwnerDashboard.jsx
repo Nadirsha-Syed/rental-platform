@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import "./OwnerDashboard.css";
+// 🔥 MODIFIED: Import your dynamic base URL configuration
+import API_BASE_URL from "../config/api"; 
 
 export default function OwnerDashboard() {
   const [stats, setStats] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Moved out of useEffect so we can refresh the data grid after an Accept/Reject action
+  // 🔄 Fetch dashboard data using centralized environment mapping
   const fetchDashboardData = async () => {
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
-      const statsRes = await fetch("http://localhost:5000/api/bookings/owner-revenue", {
+      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
+      const statsRes = await fetch(`${API_BASE_URL}/api/bookings/owner-revenue`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const statsData = await statsRes.json();
       setStats(statsData);
 
-      const bookingsRes = await fetch("http://localhost:5000/api/bookings/owner-bookings", {
+      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
+      const bookingsRes = await fetch(`${API_BASE_URL}/api/bookings/owner-bookings`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const bookingsData = await bookingsRes.json();
@@ -37,7 +41,8 @@ export default function OwnerDashboard() {
   const handleConfirm = async (bookingId) => {
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
-      const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/confirm`, {
+      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/confirm`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}` }
       });
@@ -60,7 +65,8 @@ export default function OwnerDashboard() {
 
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
-      const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {
+      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/cancel`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}` }
       });
@@ -117,7 +123,7 @@ export default function OwnerDashboard() {
                   <th>Customer</th>
                   <th>Date & Time</th>
                   <th>Total Earned</th>
-                  <th style={{ textAlign: "right" }}>Status / Actions</th> {/* 🔥 Added header column */}
+                  <th style={{ textAlign: "right" }}>Status / Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -133,7 +139,7 @@ export default function OwnerDashboard() {
                     </td>
                     <td className="amount-cell">₹{booking.totalPrice}</td>
                     
-                    {/* 🔥 CONDITIONAL INTERACTIVE BUTTONS CELL */}
+                    {/* CONDITIONAL INTERACTIVE BUTTONS CELL */}
                     <td style={{ textAlign: "right" }}>
                       {booking.status === "pending" ? (
                         <div style={{ display: "inline-flex", gap: "8px" }}>

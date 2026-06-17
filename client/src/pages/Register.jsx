@@ -3,6 +3,8 @@ import { ThemeContext } from "../context/ThemeContext";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./Auth.css";
+// 🔥 MODIFIED: Import your dynamic base URL configuration
+import API_BASE_URL from "../config/api"; 
 
 export default function Register() {
   const { theme } = useContext(ThemeContext);
@@ -13,7 +15,8 @@ export default function Register() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    const res = await fetch("http://localhost:5000/api/auth/register", {
+    // 🔗 MODIFIED: Dynamically point registration requests to centralized API_BASE_URL layout boundaries
+    const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./MyRentals.css";
+// 🔥 MODIFIED: Imported centralized API base configurations 
+import API_BASE_URL from "../config/api"; 
 
 export default function MyRentals() {
   const [rentals, setRentals] = useState([]);
@@ -20,7 +22,9 @@ export default function MyRentals() {
         return;
       }
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/rentals/my", {
+      
+      // 🔥 MODIFIED: Applied dynamic base path string templates
+      const res = await fetch(`${API_BASE_URL}/api/rentals/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -47,7 +51,8 @@ export default function MyRentals() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this listing?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/rentals/${id}`, {
+      // 🔥 MODIFIED: Applied dynamic base path string templates
+      const res = await fetch(`${API_BASE_URL}/api/rentals/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -71,7 +76,8 @@ export default function MyRentals() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:5000/api/rentals/${editForm.id}`, {
+      // 🔥 MODIFIED: Applied dynamic base path string templates
+      const res = await fetch(`${API_BASE_URL}/api/rentals/${editForm.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +137,7 @@ export default function MyRentals() {
           </div>
         )}
 
-        {/* 🪟 EDIT MODAL OVERLAY (Kept outside the loop) */}
+        {/* 🪟 EDIT MODAL OVERLAY */}
         {isModalOpen && (
           <div className="modalOverlay">
             <div className="modalContent">

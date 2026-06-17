@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import "./ProductDetails.css";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import API_BASE_URL from "../config/api"; // Adjust path to config/api.js
 
 export default function ProductDetails() {
   const { productId } = useParams();
@@ -13,7 +14,8 @@ export default function ProductDetails() {
 
   // Fetch product
   useEffect(() => {
-    fetch(`http://localhost:5000/api/rentals/${productId}`)
+    // 🔥 MODIFIED: Swapped hardcoded URL for your central configuration pointer variable
+    fetch(`${API_BASE_URL}/api/rentals/${productId}`)
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, [productId]);
@@ -47,7 +49,8 @@ export default function ProductDetails() {
     setLoadingBooking(true); 
 
     try {
-      const res = await fetch("http://localhost:5000/api/bookings", {
+      // 🔥 MODIFIED: Swapped hardcoded URL for your central configuration pointer variable
+      const res = await fetch(`${API_BASE_URL}/api/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

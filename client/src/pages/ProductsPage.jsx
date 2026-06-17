@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom"; // 🔥 Added to read URL parameters
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
+// 🔥 MODIFIED: Import your dynamic base URL configuration
+import API_BASE_URL from "../config/api"; 
 
 export default function ProductsPage() {
   const [rentals, setRentals] = useState([]);
@@ -20,9 +22,9 @@ export default function ProductsPage() {
     try {
       setLoading(true);
 
-      // 🔗 Dynamically inject filters into the API URL string
+      // 🔗 MODIFIED: Dynamically inject filters using the centralized API_BASE_URL template literal
       const res = await fetch(
-        `http://localhost:5000/api/rentals?search=${searchQuery}&category=${categoryQuery}&location=${locationQuery}`
+        `${API_BASE_URL}/api/rentals?search=${searchQuery}&category=${categoryQuery}&location=${locationQuery}`
       );
       const data = await res.json();
       console.log("Fetched filtered rentals:", data);

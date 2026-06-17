@@ -1,5 +1,7 @@
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
+// 🔥 MODIFIED: Import your dynamic base URL configuration
+import API_BASE_URL from "../config/api"; 
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -8,9 +10,14 @@ export default function MyBookings() {
   // 🔥 Fetch bookings
   const fetchBookings = async () => {
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/bookings/my-bookings"
-      );
+      const token = localStorage.getItem("token"); // 🔥 Added token safety lookup
+
+      // 🔥 MODIFIED: Swapped hardcoded URL for API_BASE_URL and added Authorization headers
+      const res = await fetch(`${API_BASE_URL}/api/bookings/my-bookings`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
 
       const data = await res.json();
       setBookings(data);
@@ -28,10 +35,16 @@ export default function MyBookings() {
   // 🔥 Cancel booking
   const handleCancel = async (id) => {
     try {
+      const token = localStorage.getItem("token"); // 🔥 Retrieve authorization state
+      
+      // 🔥 MODIFIED: Swapped hardcoded URL for API_BASE_URL and attached bearer token
       const res = await fetch(
-        `http://localhost:5000/api/bookings/${id}/cancel`,
+        `${API_BASE_URL}/api/bookings/${id}/cancel`,
         {
           method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
         }
       );
 
