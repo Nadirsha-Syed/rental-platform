@@ -1,45 +1,23 @@
-import { useContext, useState, useEffect } from "react"; // Added useEffect
+import { useContext, useState } from "react";
 import { ThemeContext } from "../context/ThemeContext";
+import { AuthContext } from "../context/AuthContext"; // 🔥 MODIFIED: Import global AuthContext
 import "./Navbar.css";
-import { Link, useNavigate, useLocation } from "react-router-dom"; // Added useLocation
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
+  // 🔥 MODIFIED: Extract live, reactive values from centralized AuthContext pipeline
+  const { user, logout, isAuthenticated } = useContext(AuthContext); 
   const navigate = useNavigate();
-  const location = useLocation(); // Used to trigger check on page change
 
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState(null); // Move user to State
-
-  // 🔄 Sync User state with LocalStorage
-  useEffect(() => {
-    const checkUser = () => {
-      try {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser && storedUser !== "undefined") {
-          const parsedUser = JSON.parse(storedUser);
-          setUser(parsedUser);
-          console.log("Navbar: User detected ->", parsedUser.name);
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("User parse error:", err);
-        setUser(null);
-      }
-    };
-
-    checkUser();
-  }, [location]); // Re-run this check whenever the URL route changes
 
   const toggleTheme = () => {
     setTheme(theme === "default" ? "corporate" : "default");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null); // Clear state immediately
+    logout(); // 🔥 MODIFIED: Dispatches global context wipe out-of-the-box
     navigate("/login");
   };
 
@@ -75,28 +53,28 @@ export default function Navbar() {
         <div className="navActions">
 
           {/* 📂 My Rentals */}
-          {user && (
+          {isAuthenticated && (
             <Link to="/my-rentals" className="navBtn">
               My Rentals
             </Link>
           )}
 
           {/* ➕ Add Rental */}
-          {user && (
+          {isAuthenticated && (
             <Link to="/add-rental" className="addBtn">
               + Add Rental
             </Link>
           )}
 
-         {/* 📊 Dashboard Button */}
-{user && (
-  <Link to="/owner-dashboard" className="navBtn dashboardBtn">
-    Dashboard
-  </Link>
-)}
+          {/* 📊 Dashboard Button */}
+          {isAuthenticated && (
+            <Link to="/owner-dashboard" className="navBtn dashboardBtn">
+              Dashboard
+            </Link>
+          )}
 
           {/* 🔐 Auth Section */}
-          {user ? (
+          {isAuthenticated ? (
             <div className="authBlock">
               <span className="userName">
                 Hi, {user?.name || "User"}

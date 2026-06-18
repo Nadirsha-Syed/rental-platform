@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom"; // 🔥 Added to read URL parameters
+import { useState, useEffect, useContext } from "react"; 
+import { useSearchParams } from "react-router-dom"; 
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
-// 🔥 MODIFIED: Import your dynamic base URL configuration
 import API_BASE_URL from "../config/api"; 
+import { ThemeContext } from "../context/ThemeContext"; 
 
 export default function ProductsPage() {
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   
+  const { theme } = useContext(ThemeContext);
+
   // 🧭 Hook to extract live URL parameters (e.g., ?search=pulsar&location=Warangal)
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -22,7 +24,7 @@ export default function ProductsPage() {
     try {
       setLoading(true);
 
-      // 🔗 MODIFIED: Dynamically inject filters using the centralized API_BASE_URL template literal
+      // 🔗 Dynamically inject filters using the centralized API_BASE_URL template literal
       const res = await fetch(
         `${API_BASE_URL}/api/rentals?search=${searchQuery}&category=${categoryQuery}&location=${locationQuery}`
       );
@@ -66,11 +68,11 @@ export default function ProductsPage() {
           
           {/* 📍 Dropdown Filters Layout */}
           <div className="filters-container" style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
+            
             <select 
               value={locationQuery} 
               onChange={(e) => handleFilterChange("location", e.target.value)}
               className="filter-select"
-              style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc" }}
             >
               <option value="All">All Locations</option>
               <option value="Hanamkonda">Hanamkonda</option>
@@ -82,7 +84,6 @@ export default function ProductsPage() {
               value={categoryQuery} 
               onChange={(e) => handleFilterChange("category", e.target.value)}
               className="filter-select"
-              style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc" }}
             >
               <option value="All">All Categories</option>
               <option value="Electronics">Electronics</option>
@@ -90,6 +91,7 @@ export default function ProductsPage() {
               <option value="Books">Books</option>
               <option value="Tools">Tools</option>
             </select>
+
           </div>
         </div>
 

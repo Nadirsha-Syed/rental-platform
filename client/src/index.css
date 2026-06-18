@@ -182,3 +182,29 @@ body {
 .btn:hover {
   opacity: 0.9;
 }
+
+/* ==================================
+   🔥 FILTER SELECT DROPDOWNS (NEW)
+   ================================== */
+
+.filter-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text-main));
+  border: 1px solid rgb(var(--glass-border));
+  outline: none;
+  cursor: pointer;
+}
+
+/* Ensure expanded menu options inherit the exact same dynamic theme values */
+.filter-select option {
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text-main));
+}
+
+/* Interactive hover focus state using your main brand accent color */
+.filter-select:focus,
+.filter-select:hover {
+  border-color: rgb(var(--color-primary));
+}

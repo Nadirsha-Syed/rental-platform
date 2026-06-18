@@ -1,12 +1,15 @@
 import { useState, useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
+import { AuthContext } from "../context/AuthContext"; // 🔥 MODIFIED: Hook into global auth context
 import { useNavigate, Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import Navbar from "../components/Navbar";
+import API_BASE_URL from "../config/api"; // 🔥 MODIFIED: Centralized API route configuration
 import "./Auth.css";
 
 export default function Login() {
   const { theme } = useContext(ThemeContext);
+  const { login } = useContext(AuthContext); // 🔥 MODIFIED: Extract global login dispatch handler
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -20,7 +23,8 @@ export default function Login() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      // 🔗 MODIFIED: Replaced hardcoded URL with centralized API_BASE_URL layout boundaries
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -28,15 +32,16 @@ export default function Login() {
 
       const result = await response.json();
 
-      console.log("LOGIN API RESPONSE:", result); // Look at this in your browser console!
+      console.log("LOGIN API RESPONSE:", result);
 
       if (response.ok) {
-        localStorage.setItem("token", result.token);
-        
-        // Safety check to prevent storing the string "undefined"
+        // 🔥 MODIFIED: Trigger central context logic instead of disconnected local state tracking
         if (result.user) {
-          localStorage.setItem("user", JSON.stringify(result.user));
+          // Pass the combined object containing the backend user and token properties
+          login({ ...result.user, token: result.token });
         } else {
+          // Fallback context load if user object structure changes slightly
+          login({ token: result.token });
           console.warn("User object is missing in backend response!");
         }
 
@@ -52,7 +57,8 @@ export default function Login() {
   // 🔐 Google login
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/google", {
+      // 🔗 MODIFIED: Replaced hardcoded URL with centralized API_BASE_URL layout boundaries
+      const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -62,19 +68,18 @@ export default function Login() {
 
       const result = await response.json();
 
-      console.log("GOOGLE API RESPONSE:", result); // Look at this in your browser console!
+      console.log("GOOGLE API RESPONSE:", result);
 
       if (!response.ok) {
         alert(result.message || "Google login failed on server");
         return;
       }
 
-      localStorage.setItem("token", result.token);
-      
-      // Safety check
+      // 🔥 MODIFIED: Sync google pipeline properties directly with your dynamic global state provider
       if (result.user) {
-        localStorage.setItem("user", JSON.stringify(result.user));
+        login({ ...result.user, token: result.token });
       } else {
+        login({ token: result.token });
         console.warn("User data missing from Google response");
       }
 
