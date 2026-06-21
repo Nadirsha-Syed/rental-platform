@@ -17,6 +17,7 @@ app.use(express.json());
 // Dynamically accepts requests from your local machine or your live production frontend site link
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://rental-platform-blue.vercel.app/",
   process.env.FRONTEND_URL
 ].filter(Boolean); // Cleans out undefined strings if FRONTEND_URL is not configured yet
 
