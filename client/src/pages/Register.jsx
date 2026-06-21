@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import "./Auth.css";
+
 // 🔥 MODIFIED: Import your dynamic base URL configuration
 import API_BASE_URL from "../config/api"; 
 
