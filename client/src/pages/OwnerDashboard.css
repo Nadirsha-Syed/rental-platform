@@ -1,6 +1,11 @@
 .dashboard-page {
   min-height: 100vh;
-  background-color: #f9fafb;
+  /* Uses your global background gradients automatically parsed via body, or scales here: */
+  background: linear-gradient(
+    180deg,
+    rgb(var(--color-bg-start)),
+    rgb(var(--color-bg-end))
+  );
 }
 
 .dashboard-container {
@@ -16,7 +21,7 @@
 .dashboard-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #111827;
+  color: rgb(var(--text-main)); /* 🌟 Dynamic: Auto-flips high-contrast text */
 }
 
 /* Stats Layout */
@@ -28,31 +33,33 @@
 }
 
 .stat-card {
-  background: white;
+  background: rgb(var(--surface)); /* 🌟 Dynamic: White in light mode, dark grey in corporate */
   padding: 24px;
   border-radius: 16px;
-  border: 1px solid #f3f4f6;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid rgb(var(--glass-border)); /* 🌟 Dynamic: Subtle bordered line framework */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .stat-label {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: rgb(var(--text-muted)); /* 🌟 Dynamic: Crisp slate grey text */
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
 .stat-value {
   font-size: 1.875rem;
   font-weight: 700;
   margin-top: 8px;
+  color: rgb(var(--text-main)); /* 🌟 Dynamic: Contrasted numerical metric views */
 }
 
 /* Table Styling */
 .bookings-section {
-  background: white;
+  background: rgb(var(--surface)); /* 🌟 Dynamic: Aligns collection card panel background wrapper */
   border-radius: 16px;
-  border: 1px solid #f3f4f6;
+  border: 1px solid rgb(var(--glass-border));
   overflow: hidden;
 }
 
@@ -63,25 +70,35 @@
 
 .table-header-row th {
   padding: 16px 24px;
-  background: #f9fafb;
+  /* Drops a slightly transparent variant of text tracking for panel header grids */
+  background: rgba(var(--text-muted), 0.06); 
   text-align: left;
-  color: #6b7280;
+  color: rgb(var(--text-main)); /* 🌟 Dynamic: High-visibility headers */
   font-size: 0.75rem;
   text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
 .table-body-row td {
   padding: 16px 24px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid rgba(var(--glass-border), 0.5);
+  color: rgb(var(--text-main)); /* 🌟 Dynamic: Ensures email fields and entries are crisp */
+}
+
+/* Secondary meta descriptions like inner text anchors */
+.table-body-row td span, 
+.table-body-row td .text-sm {
+  color: rgb(var(--text-muted)); 
 }
 
 .amount-cell {
-  color: #4f46e5;
+  color: rgb(var(--color-primary)); /* 🌟 Dynamic: Emphasizes currency totals using your brand indigo */
   font-weight: 700;
 }
 
 .empty-state {
   padding: 80px;
   text-align: center;
-  color: #9ca3af;
+  color: rgb(var(--text-muted));
 }
