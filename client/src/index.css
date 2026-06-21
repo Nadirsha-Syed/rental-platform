@@ -208,3 +208,72 @@ body {
 .filter-select:hover {
   border-color: rgb(var(--color-primary));
 }
+
+/* ==========================================================
+   📱 MOBILE RESPONSIVE REFACTOR (NEW)
+   ========================================================== */
+@media (max-width: 768px) {
+  /* 1. Prevent desktop layouts from breaking container boundaries */
+  .page {
+    padding: 1rem;
+  }
+
+  /* 2. Force compact, wrap-around header navigation button pools */
+  .products-header, .navbar, [class*="header"] {
+    padding: 1rem !important;
+  }
+
+  div[style*="display: flex"], .filters-container {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* 3. Hide standard table headers because rows will transform into stacked cards */
+  table thead {
+    display: none !important;
+  }
+
+  /* 4. Flatten the table layout elements to vertical blocks */
+  table, table tbody, table tr, table td {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* 5. Transform table rows into separated UI card containers */
+  table tr {
+    margin-bottom: 1.2rem !important;
+    padding: 1rem !important;
+    background: rgb(var(--surface)) !important;
+    border: 1px solid rgb(var(--glass-border)) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+  }
+
+  /* 6. Align cell metadata cleanly */
+  table td {
+    padding: 6px 0 !important;
+    text-align: left !important;
+    border: none !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* 7. Flex container for Action column cells containing Accept / Reject buttons */
+  table td:last-child {
+    display: flex !important;
+    gap: 8px !important;
+    margin-top: 12px !important;
+    padding-top: 12px !important;
+    border-top: 1px solid rgba(var(--glass-border), 0.4) !important;
+  }
+
+  /* 8. Make buttons expand to fill matching row distributions safely */
+  table td button, table td .btn, table td a {
+    flex: 1 !important;
+    padding: 10px 12px !important;
+    font-size: 0.85rem !important;
+    text-align: center !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+}
