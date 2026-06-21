@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import Navbar from "../components/Navbar";
 import API_BASE_URL from "../config/api"; // 🔥 MODIFIED: Centralized API route configuration
-import "./Auth.css";
+import "./auth.css";
 
 export default function Login() {
   const { theme } = useContext(ThemeContext);
