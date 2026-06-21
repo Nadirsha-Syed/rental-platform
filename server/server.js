@@ -14,12 +14,13 @@ const app = express();
 app.use(express.json());
 
 // 🔒 HIGH-PERFORMANCE CORS SECURITY PRODUCTION BUILD
-// Dynamically accepts requests from your local machine or your live production frontend site link
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://rental-platform-blue.vercel.app/",
+  "https://rental-platform-blue.vercel.app", // 🌟 Removed trailing slash for exact matching
   process.env.FRONTEND_URL
-].filter(Boolean); // Cleans out undefined strings if FRONTEND_URL is not configured yet
+]
+  .filter(Boolean)
+  .map(origin => origin.replace(/\/$/, "")); // 🧼 Automatically strips any accidental trailing slashes
 
 app.use(
   cors({
@@ -27,13 +28,17 @@ app.use(
       // Allows serverless environments, Postman API calls, or server-to-server pings with no origin
       if (!origin) return callback(null, true);
       
-      if (allowedOrigins.indexOf(origin) === -1) {
+      // Clean incoming origin just in case
+      const cleanOrigin = origin.replace(/\/$/, "");
+      
+      if (allowedOrigins.indexOf(cleanOrigin) === -1) {
         const message = "The CORS security standard restricts cross-origin visibility from this resource location.";
         return callback(new Error(message), false);
       }
       return callback(null, true);
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
   })
 );
 
