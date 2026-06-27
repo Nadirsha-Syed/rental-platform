@@ -227,25 +227,31 @@ body {
 @media (max-width: 768px) {
   /* 1. Prevent desktop layouts from breaking container boundaries */
   .page {
-    padding: 1rem;
+    padding: 1.25rem 1rem !important;
   }
 
-  /* 2. Force compact, wrap-around header navigation button pools and filter rows */
-  .nav,
-  .navInner,
-  .navActions,
+  /* 2. Force compact, wrap-around layouts for dashboard headers and filter rows */
   .products-header,
   .filters-container,
-  header,
-  .dashboard-header,
-  [class*="header"],
-  [class*="navbar"],
-  [class*="filters"],
   .filter-container,
-  div[style*="display: flex"] {
+  .dashboard-header,
+  .stats-grid,
+  .headerSection {
+    display: flex !important;
     flex-wrap: wrap !important;
-    gap: 12px !important;
-    padding: 1rem !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    margin: 0 0 16px 0 !important;
+  }
+  
+  .products-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .filters-container {
+    width: 100% !important;
+    margin-top: 8px !important;
   }
 
   /* 3. Hide standard table headers because rows will transform into stacked cards */
