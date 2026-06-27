@@ -142,16 +142,16 @@ export default function OwnerDashboard() {
                     {/* CONDITIONAL INTERACTIVE BUTTONS CELL */}
                     <td style={{ textAlign: "right" }}>
                       {booking.status === "pending" ? (
-                        <div style={{ display: "inline-flex", gap: "8px" }}>
+                        <div className="action-buttons-container">
                           <button 
                             onClick={() => handleConfirm(booking._id)}
-                            style={{ backgroundColor: "#10B981", color: "white", padding: "6px 12px", borderRadius: "6px", border: "none", cursor: "pointer", fontWeight: "600" }}
+                            className="btn-confirm"
                           >
                             Accept
                           </button>
                           <button 
                             onClick={() => handleCancel(booking._id)}
-                            style={{ backgroundColor: "#EF4444", color: "white", padding: "6px 12px", borderRadius: "6px", border: "none", cursor: "pointer", fontWeight: "600" }}
+                            className="btn-cancel"
                           >
                             Reject
                           </button>

@@ -169,18 +169,30 @@ body {
 }
 
 .btn {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 8px;
   border: none;
+  font-weight: 600;
+  font-size: 0.875rem;
 
   background: rgb(var(--color-primary));
   color: white;
 
   cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn:hover {
-  opacity: 0.9;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--color-primary), 0.25);
+}
+
+.btn:active {
+  transform: translateY(0);
 }
 
 /* ==================================
@@ -218,14 +230,22 @@ body {
     padding: 1rem;
   }
 
-  /* 2. Force compact, wrap-around header navigation button pools */
-  .products-header, .navbar, [class*="header"] {
-    padding: 1rem !important;
-  }
-
-  div[style*="display: flex"], .filters-container {
+  /* 2. Force compact, wrap-around header navigation button pools and filter rows */
+  .nav,
+  .navInner,
+  .navActions,
+  .products-header,
+  .filters-container,
+  header,
+  .dashboard-header,
+  [class*="header"],
+  [class*="navbar"],
+  [class*="filters"],
+  .filter-container,
+  div[style*="display: flex"] {
     flex-wrap: wrap !important;
-    gap: 8px !important;
+    gap: 12px !important;
+    padding: 1rem !important;
   }
 
   /* 3. Hide standard table headers because rows will transform into stacked cards */
@@ -233,47 +253,68 @@ body {
     display: none !important;
   }
 
-  /* 4. Flatten the table layout elements to vertical blocks */
+  /* 4. Flatten the table layout elements to vertical blocks spanning full width */
   table, table tbody, table tr, table td {
     display: block !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   /* 5. Transform table rows into separated UI card containers */
   table tr {
-    margin-bottom: 1.2rem !important;
-    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+    padding: 1.25rem !important;
     background: rgb(var(--surface)) !important;
     border: 1px solid rgb(var(--glass-border)) !important;
-    border-radius: 14px !important;
+    border-radius: 16px !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
   }
 
-  /* 6. Align cell metadata cleanly */
+  /* 6. Align cell metadata cleanly to the left */
   table td {
-    padding: 6px 0 !important;
+    padding: 8px 0 !important;
     text-align: left !important;
     border: none !important;
     font-size: 0.9rem !important;
   }
 
   /* 7. Flex container for Action column cells containing Accept / Reject buttons */
-  table td:last-child {
+  table td:last-child,
+  table td:last-child > div {
     display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
     gap: 8px !important;
     margin-top: 12px !important;
     padding-top: 12px !important;
     border-top: 1px solid rgba(var(--glass-border), 0.4) !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
   }
 
-  /* 8. Make buttons expand to fill matching row distributions safely */
-  table td button, table td .btn, table td a {
-    flex: 1 !important;
+  /* 8. Make buttons scale equally to fill the card container layout gracefully */
+  table td button, 
+  table td .btn, 
+  table td a,
+  table td:last-child button, 
+  table td:last-child .btn, 
+  table td:last-child a,
+  table td:last-child > div > button,
+  table td:last-child > div > .btn,
+  table td:last-child > div > a {
+    flex: 1 1 0% !important;
+    width: 100% !important;
+    min-width: 0 !important;
     padding: 10px 12px !important;
     font-size: 0.85rem !important;
     text-align: center !important;
     display: inline-flex !important;
     justify-content: center !important;
     align-items: center !important;
+    font-weight: 600 !important;
+    box-sizing: border-box !important;
   }
 }

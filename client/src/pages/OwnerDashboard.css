@@ -102,3 +102,53 @@
   text-align: center;
   color: rgb(var(--text-muted));
 }
+
+/* 🔘 Premium Dashboard Action Buttons */
+.action-buttons-container {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.btn-confirm,
+.btn-cancel {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-confirm {
+  background-color: #10B981;
+  color: white;
+}
+
+.btn-confirm:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.btn-confirm:active {
+  transform: translateY(0);
+}
+
+.btn-cancel {
+  background-color: #EF4444;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #DC2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+}
+
+.btn-cancel:active {
+  transform: translateY(0);
+}
