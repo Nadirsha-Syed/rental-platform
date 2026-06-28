@@ -232,6 +232,39 @@
   border-color: rgba(239, 68, 68, 0.3);
 }
 
+.phoneStaticWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.phoneStaticWrap .emailText {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.editInlineBtn {
+  background: none;
+  border: none;
+  color: rgb(var(--color-primary));
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.editInlineBtn:hover {
+  background-color: rgba(var(--color-primary), 0.1);
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .profilePage {

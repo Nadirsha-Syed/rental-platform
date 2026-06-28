@@ -12,6 +12,7 @@ export default function Profile() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
 
   useEffect(() => {
     if (user?.email) {
@@ -28,6 +29,7 @@ export default function Profile() {
       localStorage.setItem(`userPhone_${user.email}`, phone);
       localStorage.setItem(`userAddress_${user.email}`, address);
       setSaveSuccess(true);
+      setIsEditingPhone(false);
       setTimeout(() => setSaveSuccess(false), 3000);
     }
   };
@@ -79,13 +81,27 @@ export default function Profile() {
             <form onSubmit={handleSave} className="profileForm">
               <div className="formGroup">
                 <label htmlFor="phone">Phone Number</label>
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="Enter your phone number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
+                {!isEditingPhone ? (
+                  <div className="phoneStaticWrap">
+                    <span className="emailText">{phone || "No phone number provided"}</span>
+                    <button
+                      type="button"
+                      className="editInlineBtn"
+                      onClick={() => setIsEditingPhone(true)}
+                    >
+                      ✏️ Edit
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    id="phone"
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    autoFocus
+                  />
+                )}
               </div>
 
               <div className="formGroup">
