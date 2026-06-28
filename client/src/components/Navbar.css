@@ -140,13 +140,37 @@
   align-items: center;
   gap: 12px; /* Adds space between all buttons */
 }
-/* 🔥 RESPONSIVE MOBILE STRATEGY */
+/* 👤 PROFILE AVATAR CIRCLE */
+.profileAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgb(var(--color-primary));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  border: 2px solid rgba(var(--glass-border) / 0.5);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+  user-select: none;
+}
 
+.profileAvatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(var(--color-primary), 0.4);
+}
+
+/* 🔥 RESPONSIVE MOBILE STRATEGY */
 @media (max-width: 768px) {
   .navInner {
-    padding: 12px 16px !important;
-    gap: 12px !important;
-    flex-wrap: wrap !important; 
+    padding: 10px 12px !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important; 
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -155,15 +179,15 @@
   /* Row 1: Logo stays left */
   .logo {
     order: 1 !important;
-    font-size: 20px !important;
+    font-size: 18px !important;
     margin: 0 !important;
   }
 
   /* Row 1: Actions stay right and wrap cleanly */
   .navActions {
-    order: 2 !important;
+    order: 3 !important;
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     gap: 8px !important;
     align-items: center !important;
     justify-content: flex-end !important;
@@ -171,19 +195,22 @@
     margin: 0 !important;
   }
 
-  /* Row 2: Search takes full width for better typing */
+  /* Row 2: Search takes remaining middle width */
   .searchWrap {
-    order: 3 !important;
-    width: 100% !important;
-    margin: 4px 0 0 0 !important;
+    order: 2 !important;
+    flex: 1 !important;
+    width: auto !important;
+    margin: 0 !important;
     display: flex !important;
     justify-content: center !important;
+    min-width: 100px !important;
   }
 
   .searchInput { 
-    padding: 10px 16px !important; 
+    padding: 8px 12px !important; 
     width: 100% !important;
     max-width: 100% !important;
+    font-size: 13px !important;
   }
 
   /* COMPACT BUTTONS FOR MOBILE */
@@ -191,25 +218,6 @@
     padding: 6px 10px !important;
     font-size: 11px !important;
     border-radius: 6px !important;
-  }
-
-  /* USERNAME IMPROVEMENT: Keep it modest on one line */
-  .userName {
-    display: inline-block !important;
-    max-width: 90px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    font-size: 11px !important;
-    line-height: 1.2 !important;
-    opacity: 0.9 !important;
-    vertical-align: middle !important;
-  }
-
-  .authBlock {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
   }
 
   .themeSwitch {
@@ -235,6 +243,12 @@
   
   .themeSwitch.active .switchBall { 
     transform: translateX(16px) !important; 
+  }
+
+  .profileAvatar {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 13px !important;
   }
 }
 

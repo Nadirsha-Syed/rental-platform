@@ -52,44 +52,6 @@ export default function Navbar() {
         {/* RIGHT - Actions */}
         <div className="navActions">
 
-          {/* 📂 My Rentals */}
-          {isAuthenticated && (
-            <Link to="/my-rentals" className="navBtn">
-              My Rentals
-            </Link>
-          )}
-
-          {/* ➕ Add Rental */}
-          {isAuthenticated && (
-            <Link to="/add-rental" className="addBtn">
-              + Add Rental
-            </Link>
-          )}
-
-          {/* 📊 Dashboard Button */}
-          {isAuthenticated && (
-            <Link to="/owner-dashboard" className="navBtn dashboardBtn">
-              Dashboard
-            </Link>
-          )}
-
-          {/* 🔐 Auth Section */}
-          {isAuthenticated ? (
-            <div className="authBlock">
-              <span className="userName">
-                Hi, {user?.name || "User"}
-              </span>
-
-              <button onClick={handleLogout} className="logoutBtn">
-                Logout
-              </button>
-            </div>
-          ) : (
-            <Link to="/login" className="loginBtn">
-              Login
-            </Link>
-          )}
-
           {/* 🎨 Theme Toggle */}
           <button
             onClick={toggleTheme}
@@ -99,6 +61,11 @@ export default function Navbar() {
           >
             <span className="switchBall"></span>
           </button>
+
+          {/* 👤 Circular Profile Avatar */}
+          <Link to="/profile" className="profileAvatar" title="Profile & Account">
+            {isAuthenticated && user?.name ? user.name[0].toUpperCase() : "👤"}
+          </Link>
 
         </div>
 
