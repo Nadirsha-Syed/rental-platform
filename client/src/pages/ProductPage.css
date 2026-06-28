@@ -16,7 +16,7 @@
 .grid {
   display: grid !important;
   /* 4 cards on PC, 2 on tablet, 1 on mobile */
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
   gap: 32px 24px !important;
   width: 100%;
 }

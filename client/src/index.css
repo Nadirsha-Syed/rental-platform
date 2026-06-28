@@ -45,6 +45,18 @@
    GLOBAL STYLES
    ========================= */
 
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Inter", sans-serif;
 
@@ -87,7 +99,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 }
 
@@ -321,6 +333,45 @@ body {
     justify-content: center !important;
     align-items: center !important;
     font-weight: 600 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 9. Layout constraints for viewports under 768px: force 100% width and overflow-x hidden */
+  html,
+  body,
+  #root,
+  .page,
+  .myRentalsPage,
+  .productDetailsPage,
+  .dashboard-page,
+  .dashboard-container,
+  .authPage,
+  .grid,
+  .rentalsGrid,
+  .products-header,
+  .filters-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 10. Break card components, search bars, and input fields from hardcoded desktop widths to scale fluidly */
+  .card,
+  .rentalCard,
+  .bookingCard,
+  .stat-card,
+  .searchInput,
+  .searchWrap,
+  .bookingBox,
+  .authCard,
+  input,
+  select,
+  textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
     box-sizing: border-box !important;
   }
 }
