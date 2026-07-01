@@ -6,6 +6,7 @@ import rentalRoutes from "./routes/rentalRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import paymentRoutes from "./routes/payments.js";
 
 // Connect to MongoDB
 connectDB();
@@ -44,6 +45,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // Root Deployment Test Routes
 app.get("/", (req, res) => {

@@ -231,7 +231,6 @@ export const confirmBooking = async (req, res) => {
     }
 
     booking.status = "confirmed";
-    booking.paymentStatus = "paid"; 
     await booking.save();
 
     // 🔥 OPTIMIZATION: Return success response to the client immediately

@@ -1,59 +1,217 @@
-.page {
-  padding: 30px;
+.myBookingsPage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
 }
 
-.title {
-  font-size: 26px;
-  margin-bottom: 20px;
+.headerSection {
+  text-align: center;
+  margin-bottom: 3rem;
 }
 
-.grid {
+.bookingsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
 }
 
+/* Premium Card Layout */
 .bookingCard {
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 12px;
-  background: white;
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--glass-border));
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.bookingCard img {
+.bookingCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.imageWrapper {
+  position: relative;
   width: 100%;
-  height: 160px;
+  height: 180px;
+  overflow: hidden;
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
 }
 
-.bookingCard h3 {
-  margin-top: 10px;
-}
-
-.bookingCard button {
-  margin-top: 10px;
-  padding: 8px;
-  background: red;
+/* Badges superimposed on image */
+.statusBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: white;
-  border: none;
+}
+
+.statusBadge.pending {
+  background: #f59e0b; /* Amber */
+}
+
+.statusBadge.confirmed {
+  background: #10b981; /* Emerald */
+}
+
+.statusBadge.cancelled {
+  background: #ef4444; /* Rose */
+}
+
+.statusBadge.completed {
+  background: #3b82f6; /* Blue */
+}
+
+.statusBadge.expired {
+  background: #6b7280; /* Gray */
+}
+
+.cardContent {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.cardContent h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: rgb(var(--text-main));
+}
+
+.locationInfo {
+  font-size: 0.85rem;
+  color: rgb(var(--text-muted));
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dateTimeInfo {
+  font-size: 0.85rem;
+  color: rgb(var(--text-muted));
+  border-top: 1px solid rgb(var(--glass-border));
+  border-bottom: 1px solid rgb(var(--glass-border));
+  padding: 8px 0;
+  margin: 4px 0;
+}
+
+.priceContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.priceLabel {
+  font-size: 0.9rem;
+  color: rgb(var(--text-muted));
+}
+
+.totalPriceValue {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: rgb(var(--text-main));
+}
+
+/* Payment Status Indicator */
+.paymentStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
   border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.paymentStatusBadge.paid {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.paymentStatusBadge.unpaid {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.paymentStatusBadge.failed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* Action Area */
+.cardActions {
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Button Refinement */
+.btnPayNow {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
+  background: rgb(var(--color-primary));
+  color: white;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
 }
 
-/* STATUS COLORS */
-.status {
-  font-weight: bold;
+.btnPayNow:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(var(--color-primary), 0.25);
+  transform: translateY(-1px);
 }
 
-.status.confirmed {
-  color: green;
+.btnPayNow:active {
+  transform: translateY(0);
 }
 
-.status.pending {
-  color: orange;
+.btnCancelBooking {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid rgb(var(--glass-border));
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: transparent;
+  color: rgb(var(--text-muted));
+  transition: all 0.2s ease;
 }
 
-.status.cancelled {
-  color: red;
+.btnCancelBooking:hover {
+  background: rgba(239, 68, 68, 0.05);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2);
 }
+
+.btnCancelBooking:active {
+  background: rgba(239, 68, 68, 0.1);
+}
