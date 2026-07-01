@@ -2,6 +2,8 @@ import express from "express";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import Booking from "../models/Booking.js";
+import RentalItem from "../models/RentalItem.js";
+import { sendNewBookingEmail, sendBookingConfirmedEmail } from "../utils/sendEmail.js";
 
 const router = express.Router();
 
@@ -14,7 +16,26 @@ const razorpay = new Razorpay({
 // Route to create a new order
 router.post("/create-order", async (req, res) => {
   try {
-    const { amount } = req.body; 
+    const { amount, itemId, borrowerName } = req.body; 
+
+    // Asynchronously trigger New Booking email to Lender/Owner
+    if (itemId && borrowerName) {
+      RentalItem.findById(itemId)
+        .populate("owner", "name email")
+        .then((item) => {
+          if (item && item.owner) {
+            sendNewBookingEmail(
+              item.owner.email,
+              item.owner.name,
+              item.title,
+              borrowerName,
+              amount
+            ).catch((err) => console.error("⚠️ Email dispatch failure on order creation:", err.message));
+          }
+        })
+        .catch((err) => console.error("⚠️ Database query failure during item owner retrieval:", err.message));
+    }
+
     const options = {
       amount: amount * 100, // Razorpay processes amounts in paise
       currency: "INR",
@@ -51,11 +72,28 @@ router.post("/verify-payment", async (req, res) => {
           bookingId,
           { paymentStatus: "paid" },
           { new: true }
-        );
+        )
+        .populate("user", "name email")
+        .populate({
+          path: "rentalItem",
+          populate: { path: "owner", select: "name email" }
+        });
+
         if (!updatedBooking) {
           console.warn(`Booking with ID ${bookingId} not found during payment status update.`);
         } else {
           console.log(`Booking ${bookingId} successfully updated to paid.`);
+          
+          // Asynchronously dispatch receipt/invoice confirmation to Borrower
+          if (updatedBooking.user && updatedBooking.rentalItem && updatedBooking.rentalItem.owner) {
+            sendBookingConfirmedEmail(
+              updatedBooking.user.email,
+              updatedBooking.user.name,
+              updatedBooking.rentalItem.title,
+              updatedBooking.totalPrice,
+              updatedBooking.rentalItem.owner.email
+            ).catch((err) => console.error("⚠️ Email dispatch failure on payment confirmation:", err.message));
+          }
         }
       }
       return res.status(200).json({ success: true, message: "Payment verified successfully" });

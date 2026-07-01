@@ -79,6 +79,7 @@ export default function MyBookings() {
       email: user.email,
       phone: phoneStored,
       bookingId: booking._id,
+      itemId: booking.rentalItem?._id || booking.rentalItem, // Include item context for alerts
     };
 
     // Execute the three-way payment handshake

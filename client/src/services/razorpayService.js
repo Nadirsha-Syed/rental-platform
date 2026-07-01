@@ -36,7 +36,11 @@ export const executeRentalPayment = async (amount, rentalName, userDetails = {},
     const orderResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/payment/create-order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount }),
+      body: JSON.stringify({
+        amount,
+        itemId: userDetails.itemId,
+        borrowerName: userDetails.name,
+      }),
     });
 
     if (!orderResponse.ok) {
