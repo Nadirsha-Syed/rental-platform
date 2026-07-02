@@ -6,7 +6,9 @@ import { AuthContext } from "../context/AuthContext"; // 🔌 Import AuthContext
 
 export default function OwnerDashboard() {
   const { user } = useContext(AuthContext); // 💰 Extract user session object
-  const [stats, setStats] = useState(null);
+  
+  // 🛠️ FIX: Initialize state with a safe object structure instead of null to prevent runtime layout errors
+  const [stats, setStats] = useState({ totalRevenue: 0, totalBookings: 0, activeBookings: 0 });
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [withdrawalHandle, setWithdrawalHandle] = useState(""); // State to hold input handle
@@ -19,13 +21,17 @@ export default function OwnerDashboard() {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const statsData = await statsRes.json();
-      setStats(statsData);
+      
+      // Validation safety check
+      if (statsRes.ok) {
+        setStats(statsData);
+      }
 
       const bookingsRes = await fetch(`${API_BASE_URL}/api/bookings/owner-bookings`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const bookingsData = await bookingsRes.json();
-      setBookings(bookingsData);
+      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
     } catch (err) {
       console.error("Dashboard fetch error:", err);
     } finally {
@@ -102,32 +108,25 @@ export default function OwnerDashboard() {
         </header>
 
         {/* 💰 VIRTUAL EARNINGS WALLET DISPLAY CARD */}
-        <div className="wallet-card" style={{ 
-          background: "linear-gradient(135deg, #4f46e5, #6366f1)", 
-          color: "white", 
-          padding: "24px", 
-          borderRadius: "16px", 
-          marginBottom: "30px", 
-          boxShadow: "0 10px 20px rgba(79, 70, 229, 0.15)" 
-        }}>
-          <span style={{ fontSize: "12px", opacity: 0.9, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "600" }}>
+        <div className="wallet-card">
+          <span className="wallet-label">
             Withdrawable Wallet Ledger Balance
           </span>
-          <h1 style={{ margin: "5px 0 15px 0", fontSize: "36px", fontWeight: "800" }}>
+          <h1 className="wallet-value">
             ₹{user?.walletBalance !== undefined ? user.walletBalance : (stats?.totalRevenue || 0)}
           </h1>
           
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <div className="wallet-input-group">
             <input 
               type="text" 
               placeholder="Enter FamApp UPI (e.g., name@fam)" 
               value={withdrawalHandle}
               onChange={(e) => setWithdrawalHandle(e.target.value)}
-              style={{ padding: "10px 14px", borderRadius: "8px", border: "none", outline: "none", fontSize: "13px", flex: "1", minWidth: "200px", color: "#334155" }}
+              className="wallet-input"
             />
             <button 
               onClick={handleWithdrawalRequest}
-              style={{ backgroundColor: "#10b981", color: "white", border: "none", padding: "10px 18px", borderRadius: "8px", fontSize: "13px", fontWeight: "bold", cursor: "pointer", transition: "background 0.2s" }}
+              className="btn-withdraw"
             >
               Withdraw to FamApp
             </button>

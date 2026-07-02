@@ -1,4 +1,4 @@
-import mongoose from "mongoose"; // 🔄 Switched to ES Module import to match backend setup
+const mongoose = require("mongoose"); // 🛠️ Fixed: Reverted to CommonJS require statement
 
 const userSchema = new mongoose.Schema(
   {
@@ -33,5 +33,5 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// 🔄 Switched to ES Module default export
-export default mongoose.model("User", userSchema);
+// 🛠️ Fixed: Reverted to CommonJS module exports syntax
+module.exports = mongoose.model("User", userSchema);
