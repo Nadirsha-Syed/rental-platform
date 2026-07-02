@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose"; // 🔄 Switched to ES Module import to match backend setup
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,8 +24,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false, // useful later for vendors
     },
+    // 💰 WALLET LEDGER: Tracks virtual earnings for P2P manual settlements
+    walletBalance: {
+      type: Number,
+      default: 0, // Initial balance starts at zero rupees
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", userSchema);
+// 🔄 Switched to ES Module default export
+export default mongoose.model("User", userSchema);

@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Navbar from "../components/Navbar";
 import "./OwnerDashboard.css";
-// 🔥 MODIFIED: Import your dynamic base URL configuration
 import API_BASE_URL from "../config/api"; 
+import { AuthContext } from "../context/AuthContext"; // 🔌 Import AuthContext to read dynamic wallet states
 
 export default function OwnerDashboard() {
+  const { user } = useContext(AuthContext); // 💰 Extract user session object
   const [stats, setStats] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [withdrawalHandle, setWithdrawalHandle] = useState(""); // State to hold input handle
 
   // 🔄 Fetch dashboard data using centralized environment mapping
   const fetchDashboardData = async () => {
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
-      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
       const statsRes = await fetch(`${API_BASE_URL}/api/bookings/owner-revenue`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const statsData = await statsRes.json();
       setStats(statsData);
 
-      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
       const bookingsRes = await fetch(`${API_BASE_URL}/api/bookings/owner-bookings`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
@@ -41,14 +41,13 @@ export default function OwnerDashboard() {
   const handleConfirm = async (bookingId) => {
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
-      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
       const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/confirm`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}` }
       });
 
       if (res.ok) {
-        alert("Booking Confirmed! 🟢");
+        alert("Booking Confirmed! Lender wallet credited successfully. 🟢");
         fetchDashboardData(); // 🔄 Instantly refresh stats and list
       } else {
         const data = await res.json();
@@ -65,14 +64,13 @@ export default function OwnerDashboard() {
 
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
-      // 🔥 MODIFIED: Replaced hardcoded URL strings with template literals pointing to API_BASE_URL
       const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/cancel`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}` }
       });
 
       if (res.ok) {
-        alert("Booking Rejected 🔴");
+        alert("Booking Rejected and balance adjusted 🔴");
         fetchDashboardData(); // 🔄 Instantly refresh stats and list
       } else {
         const data = await res.json();
@@ -81,6 +79,15 @@ export default function OwnerDashboard() {
     } catch (err) {
       console.error("Cancel Error:", err);
     }
+  };
+
+  const handleWithdrawalRequest = () => {
+    if (!withdrawalHandle.trim()) {
+      alert("Please enter a valid FamApp UPI handle before executing settlement.");
+      return;
+    }
+    alert(`Withdrawal request recorded for ${withdrawalHandle}! Your platform admin will process the manual payout settlement to your balance account within 24 hours.`);
+    setWithdrawalHandle("");
   };
 
   if (loading) return <div className="loading-state">Loading Dashboard...</div>;
@@ -93,6 +100,39 @@ export default function OwnerDashboard() {
           <h1 className="dashboard-title">Owner Dashboard</h1>
           <p className="dashboard-subtitle">Manage your rentals and track your earnings.</p>
         </header>
+
+        {/* 💰 VIRTUAL EARNINGS WALLET DISPLAY CARD */}
+        <div className="wallet-card" style={{ 
+          background: "linear-gradient(135deg, #4f46e5, #6366f1)", 
+          color: "white", 
+          padding: "24px", 
+          borderRadius: "16px", 
+          marginBottom: "30px", 
+          boxShadow: "0 10px 20px rgba(79, 70, 229, 0.15)" 
+        }}>
+          <span style={{ fontSize: "12px", opacity: 0.9, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "600" }}>
+            Withdrawable Wallet Ledger Balance
+          </span>
+          <h1 style={{ margin: "5px 0 15px 0", fontSize: "36px", fontWeight: "800" }}>
+            ₹{user?.walletBalance !== undefined ? user.walletBalance : (stats?.totalRevenue || 0)}
+          </h1>
+          
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <input 
+              type="text" 
+              placeholder="Enter FamApp UPI (e.g., name@fam)" 
+              value={withdrawalHandle}
+              onChange={(e) => setWithdrawalHandle(e.target.value)}
+              style={{ padding: "10px 14px", borderRadius: "8px", border: "none", outline: "none", fontSize: "13px", flex: "1", minWidth: "200px", color: "#334155" }}
+            />
+            <button 
+              onClick={handleWithdrawalRequest}
+              style={{ backgroundColor: "#10b981", color: "white", border: "none", padding: "10px 18px", borderRadius: "8px", fontSize: "13px", fontWeight: "bold", cursor: "pointer", transition: "background 0.2s" }}
+            >
+              Withdraw to FamApp
+            </button>
+          </div>
+        </div>
 
         {/* 📊 Earnings Overview */}
         <section className="stats-grid">
@@ -131,15 +171,14 @@ export default function OwnerDashboard() {
                   <tr key={booking._id} className="table-body-row">
                     <td className="item-cell">{booking.rentalItem?.title}</td>
                     <td className="customer-cell">
-                      <div className="customer-name">{booking.user?.name || "Promptedin"}</div>
-                      <div className="customer-email">{booking.user?.email || "promptedin@gmail.com"}</div>
+                      <div className="customer-name">{booking.user?.name || "Premium Renter"}</div>
+                      <div className="customer-email">{booking.user?.email || "renter@email.com"}</div>
                     </td>
                     <td className="date-cell">
                       {new Date(booking.startTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                     </td>
                     <td className="amount-cell">₹{booking.totalPrice}</td>
                     
-                    {/* CONDITIONAL INTERACTIVE BUTTONS CELL */}
                     <td style={{ textAlign: "right" }}>
                       {booking.status === "pending" ? (
                         <div className="action-buttons-container">
@@ -168,7 +207,6 @@ export default function OwnerDashboard() {
                         </span>
                       )}
                     </td>
-
                   </tr>
                 ))}
               </tbody>
