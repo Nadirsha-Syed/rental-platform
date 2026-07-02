@@ -42,6 +42,10 @@ export const sendEmail = async ({ to, subject, html }) => {
  */
 export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borrowerName, totalPrice) => {
   const subject = `📥 New Rental Request for your ${itemTitle}!`;
+  
+  // 🌐 Dynamic URL environment variable handler fallback
+  const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
   const html = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 10px;">
       <h2 style="color: #4f46e5; border-bottom: 2px solid #4f46e5; padding-bottom: 10px;">New Booking Request Received!</h2>
@@ -53,9 +57,10 @@ export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borr
         <p style="margin: 0;"><strong>Estimated Total Earnings:</strong> ₹${totalPrice}</p>
       </div>
 
-      <p>Please log directly into your <strong>Owner Dashboard</strong> to either approve or reject this request.</p>
+      <p>Please log directly into your account to either approve or reject this request from your dashboard actions list.</p>
       <div style="text-align: center; margin: 30px 0;">
-        <a href="http://localhost:5173/dashboard" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Go to Owner Dashboard</a>
+        {/* 🔗 Dynamically links to profile hub layout where quick-actions live */}
+        <a href="${baseUrl}/profile" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Go to Dashboard</a>
       </div>
       <p style="font-size: 0.9rem; color: #6b7280;">Best regards,<br>The P2P Marketplace Engine</p>
     </div>
@@ -69,6 +74,10 @@ export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borr
  */
 export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, itemTitle, totalPrice, ownerEmail) => {
   const subject = `🎉 Booking Confirmed: Your ${itemTitle} is ready!`;
+  
+  // 🌐 Dynamic URL environment variable handler fallback
+  const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
   const html = `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 10px;">
       <h2 style="color: #10b981; border-bottom: 2px solid #10b981; padding-bottom: 10px;">Your Booking is Confirmed!</h2>
@@ -81,7 +90,11 @@ export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, ite
         <p style="margin: 0;"><strong>Lender Contact Email:</strong> ${ownerEmail}</p>
       </div>
 
-      <p>You can check the layout status and active timeframe schedules anytime on your profile orders grid tab.</p>
+      <p>You can complete checkout, process your Razorpay token, or check timing updates securely within your tracking portal panel view.</p>
+      <div style="text-align: center; margin: 30px 0;">
+        {/* 🔗 Direct path back to personal tracked items layout tab */}
+        <a href="${baseUrl}/profile" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">View My Bookings</a>
+      </div>
       <p style="font-size: 0.9rem; color: #6b7280;">Enjoy your rental!<br>The P2P Marketplace Engine</p>
     </div>
   `;
@@ -95,6 +108,9 @@ export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, ite
 export const sendBookingCancelledEmail = async (recipientEmail, recipientName, itemTitle, roleContext) => {
   const subject = `⚠️ Booking Update: Rental Request Cancelled`;
   
+  // 🌐 Dynamic URL environment variable handler fallback
+  const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
   const alertText = roleContext === "owner" 
     ? `The borrower has cancelled their pending request for your <strong>${itemTitle}</strong>.`
     : `We regret to inform you that your rental request for the <strong>${itemTitle}</strong> has been declined or cancelled.`;
@@ -105,6 +121,10 @@ export const sendBookingCancelledEmail = async (recipientEmail, recipientName, i
       <p>Hello <strong>${recipientName}</strong>,</p>
       <p>${alertText}</p>
       <p>If any transactional payment thresholds were held, they will be processed back to the originating framework collections context immediately.</p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${baseUrl}/profile" style="background-color: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Return to Dashboard</a>
+      </div>
       <p style="font-size: 0.9rem; color: #6b7280;">Best regards,<br>The P2P Marketplace Engine</p>
     </div>
   `;
