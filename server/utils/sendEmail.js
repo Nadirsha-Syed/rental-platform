@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 /**
- * Reusable Core Email Sender Utility (Fortified for Cloud IPv4-Strict Containers)
+ * Reusable Core Email Sender Utility (Using Native Service Map)
  * @param {Object} options - Email options
  * @param {string} options.to - Recipient email address
  * @param {string} options.subject - Email subject line
@@ -9,19 +9,17 @@ import nodemailer from "nodemailer";
  */
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    // 1. Force strict IPv4 address connection resolution parameters
+    // 1. Initialize the Nodemailer transporter engine using native pooling
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, // Must be false for port 587
-      family: 4, // 🔥 CRITICAL FIX: Forces Nodemailer to connect over IPv4, bypassing Render's unreachable IPv6 route!
+      service: "gmail", // 🔥 Forces Nodemailer to handle internal optimal port configurations automatically
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Your secure 16-character Google App Password
+        pass: process.env.EMAIL_PASS, // Your secure 16-character Google App Password (no spaces)
       },
-      tls: {
-        rejectUnauthorized: false, // Prevents cloud container network handshake drops
-      },
+      pool: true, // Uses persistent connections instead of establishing a new handshake every single time
+      rateLimit: true,
+      maxConnections: 5,
+      maxMessages: 100
     });
 
     // 2. Define structural layout parameters
