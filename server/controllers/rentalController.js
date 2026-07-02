@@ -76,7 +76,7 @@ export const createBooking = async (req, res) => {
       item.owner.email,
       item.owner.name,
       item.title,
-      req.user.name || "A User",
+      req.user?.name || "A User",
       totalPrice
     ).catch((mailErr) => console.error("⚠️ Background Mail Error (Create Booking):", mailErr.message));
 
@@ -248,13 +248,20 @@ export const cancelBooking = async (req, res) => {
 export const confirmBooking = async (req, res) => {
   try {
     const currentUserId = req.user?._id || req.user?.id;
-    const booking = await Booking.findById(req.params.id).populate("rentalItem").populate("user", "name email");
+    // Deeply populate the embedded rental item owner to draw verification fallback hooks safely
+    const booking = await Booking.findById(req.params.id)
+      .populate({
+        path: "rentalItem",
+        populate: { path: "owner", select: "email name" }
+      })
+      .populate("user", "name email");
 
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    if (booking.rentalItem.owner.toString() !== currentUserId.toString()) {
+    const lenderId = booking.rentalItem?.owner?._id || booking.rentalItem?.owner;
+    if (!lenderId || lenderId.toString() !== currentUserId.toString()) {
       return res.status(403).json({ message: "Not authorized to confirm this booking" });
     }
 
@@ -282,15 +289,19 @@ export const confirmBooking = async (req, res) => {
       data: booking,
     });
 
+    // 🛠️ OPTIMIZATION: Fallback to verified database records if middleware payload attributes drop string references
+    const verifiedLenderEmail = booking.rentalItem?.owner?.email || req.user?.email || "lender@market.com";
+
     sendBookingConfirmedEmail(
       booking.user.email,
       booking.user.name,
       booking.rentalItem.title,
       booking.totalPrice,
-      req.user.email || "lender@market.com"
+      verifiedLenderEmail
     ).catch((mailErr) => console.error("⚠️ Background Mail Error (Confirm Booking):", mailErr.message));
 
   } catch (error) {
+    console.log("CONFIRM BOOKING ERROR:", error);
     if (!res.headersSent) {
       return res.status(500).json({ message: error.message });
     }
