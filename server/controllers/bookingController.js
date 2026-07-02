@@ -86,16 +86,23 @@ export const createBooking = async (req, res) => {
 };
 
 // ✅ 2. Get My Bookings (Borrower Perspective - Deeply Populated for UI Tracking)
+// ✅ 2. Get My Bookings (Borrower Perspective - Fallback Safe ID Assignment)
 export const getMyBookings = async (req, res) => {
   try {
-    // Queries all bookings initiated by the logged-in user
-    const bookings = await Booking.find({ user: req.user._id })
+    // 🔍 Fallback validation check: tries _id first, defaults to .id if missing
+    const currentUserId = req.user?._id || req.user?.id;
+
+    if (!currentUserId) {
+      return res.status(401).json({ success: false, message: "User context not identified." });
+    }
+
+    const bookings = await Booking.find({ user: currentUserId })
       .populate({
         path: "rentalItem",
         select: "title pricePerHour image location owner",
         populate: {
           path: "owner",
-          select: "name email", // Grants access to 'booking.rentalItem.owner.email' on frontend
+          select: "name email",
         },
       })
       .sort({ createdAt: -1 });
