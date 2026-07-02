@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext"; // 🔌 Import AuthContext
 export default function OwnerDashboard() {
   const { user } = useContext(AuthContext); // 💰 Extract user session object
   
-  // 🛠️ FIX: Initialize state with a safe object structure instead of null to prevent runtime layout errors
+  // Initialize state with a safe object structure instead of null to prevent runtime layout errors
   const [stats, setStats] = useState({ totalRevenue: 0, totalBookings: 0, activeBookings: 0 });
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,10 +89,10 @@ export default function OwnerDashboard() {
 
   const handleWithdrawalRequest = () => {
     if (!withdrawalHandle.trim()) {
-      alert("Please enter a valid FamApp UPI handle before executing settlement.");
+      alert("Please enter a valid UPI ID / handle before executing settlement.");
       return;
     }
-    alert(`Withdrawal request recorded for ${withdrawalHandle}! Your platform admin will process the manual payout settlement to your balance account within 24 hours.`);
+    alert(`Withdrawal request recorded for ${withdrawalHandle}! Your platform admin will process the manual payout settlement to your account within 24 hours.`);
     setWithdrawalHandle("");
   };
 
@@ -119,7 +119,7 @@ export default function OwnerDashboard() {
           <div className="wallet-input-group">
             <input 
               type="text" 
-              placeholder="Enter FamApp UPI (e.g., name@fam)" 
+              placeholder="Enter UPI ID (e.g., name@upi)" 
               value={withdrawalHandle}
               onChange={(e) => setWithdrawalHandle(e.target.value)}
               className="wallet-input"
@@ -128,7 +128,7 @@ export default function OwnerDashboard() {
               onClick={handleWithdrawalRequest}
               className="btn-withdraw"
             >
-              Withdraw to FamApp
+              Withdraw to UPI
             </button>
           </div>
         </div>
