@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 /**
- * Reusable Core Email Sender Utility
+ * Reusable Core Email Sender Utility (Optimized for Cloud Environments)
  * @param {Object} options - Email options
  * @param {string} options.to - Recipient email address
  * @param {string} options.subject - Email subject line
@@ -9,12 +9,17 @@ import nodemailer from "nodemailer";
  */
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    // 1. Initialize the Nodemailer transporter engine using Gmail
+    // 1. Initialize the Nodemailer transporter engine explicitly targeting Port 587
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // Must be false for port 587 to allow upgrade to secure TLS via STARTTLS
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS, // Your secure 16-character Google App Password
+      },
+      tls: {
+        rejectUnauthorized: false, // Prevents cloud hosting container handshakes from dropping connection
       },
     });
 
@@ -31,8 +36,8 @@ export const sendEmail = async ({ to, subject, html }) => {
     console.log(`📨 Email dispatched successfully. Message ID: ${info.messageId}`);
     return info;
   } catch (error) {
-    console.error("❌ NODEMAILER ERROR:", error);
-    // Throwing the error ensures your controller knows the email phase failed
+    // Highly visible log flag to trace any residual authentication issues or missing variables
+    console.error("❌ NODEMAILER CONNECTION ERROR DETAIL:", error);
     throw new Error("Failed to send transactional email notification.");
   }
 };
@@ -42,8 +47,6 @@ export const sendEmail = async ({ to, subject, html }) => {
  */
 export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borrowerName, totalPrice) => {
   const subject = `📥 New Rental Request for your ${itemTitle}!`;
-  
-  // 🌐 Dynamic URL environment variable handler fallback
   const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
   const html = `
@@ -59,7 +62,6 @@ export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borr
 
       <p>Please log directly into your account to either approve or reject this request from your dashboard actions list.</p>
       <div style="text-align: center; margin: 30px 0;">
-        {/* 🔗 Dynamically links to profile hub layout where quick-actions live */}
         <a href="${baseUrl}/profile" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Go to Dashboard</a>
       </div>
       <p style="font-size: 0.9rem; color: #6b7280;">Best regards,<br>The P2P Marketplace Engine</p>
@@ -74,8 +76,6 @@ export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borr
  */
 export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, itemTitle, totalPrice, ownerEmail) => {
   const subject = `🎉 Booking Confirmed: Your ${itemTitle} is ready!`;
-  
-  // 🌐 Dynamic URL environment variable handler fallback
   const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
   const html = `
@@ -92,7 +92,6 @@ export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, ite
 
       <p>You can complete checkout, process your Razorpay token, or check timing updates securely within your tracking portal panel view.</p>
       <div style="text-align: center; margin: 30px 0;">
-        {/* 🔗 Direct path back to personal tracked items layout tab */}
         <a href="${baseUrl}/profile" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">View My Bookings</a>
       </div>
       <p style="font-size: 0.9rem; color: #6b7280;">Enjoy your rental!<br>The P2P Marketplace Engine</p>
@@ -107,8 +106,6 @@ export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, ite
  */
 export const sendBookingCancelledEmail = async (recipientEmail, recipientName, itemTitle, roleContext) => {
   const subject = `⚠️ Booking Update: Rental Request Cancelled`;
-  
-  // 🌐 Dynamic URL environment variable handler fallback
   const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
   const alertText = roleContext === "owner" 
