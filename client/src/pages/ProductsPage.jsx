@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import API_BASE_URL from "../config/api"; 
 import { ThemeContext } from "../context/ThemeContext"; 
+import { AuthContext } from "../context/AuthContext"; // 🔌 Import AuthContext to know who is logged in
 
 export default function ProductsPage() {
   const [rentals, setRentals] = useState([]);
@@ -11,20 +12,20 @@ export default function ProductsPage() {
   const [error, setError] = useState("");
   
   const { theme } = useContext(ThemeContext);
+  const { user } = useContext(AuthContext); // ⭐ Get the logged-in user information
 
-  // 🧭 Hook to extract live URL parameters (e.g., ?search=pulsar&location=Warangal)
+  // 🧭 Hook to extract live URL parameters
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchQuery = searchParams.get("search") || "";
   const categoryQuery = searchParams.get("category") || "All";
   const locationQuery = searchParams.get("location") || "All";
 
-  // 🔥 Fetch function (reusable, now dynamically builds query string)
+  // 🔥 Fetch function
   const fetchRentals = async () => {
     try {
       setLoading(true);
 
-      // 🔗 Dynamically inject filters using the centralized API_BASE_URL template literal
       const res = await fetch(
         `${API_BASE_URL}/api/rentals?search=${searchQuery}&category=${categoryQuery}&location=${locationQuery}`
       );
@@ -40,7 +41,7 @@ export default function ProductsPage() {
     }
   };
 
-  // 🔄 Re-run fetch whenever any query parameters in the URL change
+  // 🔄 Re-run fetch whenever any query parameters change
   useEffect(() => {
     fetchRentals();
   }, [searchQuery, categoryQuery, locationQuery]);
@@ -50,13 +51,25 @@ export default function ProductsPage() {
     const currentParams = Object.fromEntries([...searchParams]);
     
     if (value === "All") {
-      delete currentParams[key]; // Keep URL neat if 'All' is picked
+      delete currentParams[key]; 
     } else {
       currentParams[key] = value;
     }
     
     setSearchParams(currentParams);
   };
+
+  // 🛑 FILTER LOGIC: Exclude listings owned by the logged-in user
+  const visibleRentals = rentals.filter((item) => {
+    const itemOwnerId = item.owner?._id || item.owner;
+    const currentUserId = user?._id || user?.id;
+
+    // If both IDs exist and match, exclude this item from the main screen array
+    if (itemOwnerId && currentUserId && itemOwnerId.toString() === currentUserId.toString()) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <>
@@ -101,16 +114,16 @@ export default function ProductsPage() {
         {/* ❌ Error */}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* 📦 Empty State */}
-        {!loading && rentals.length === 0 && (
+        {/* 📦 Empty State (Checked against visibleRentals instead of raw rentals) */}
+        {!loading && visibleRentals.length === 0 && (
           <p className="empty-message" style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
             No rentals match your search criteria. Try adjusting your filters!
           </p>
         )}
 
-        {/* 🧾 Products Grid */}
+        {/* 🧾 Products Grid (Mapping visibleRentals safely filtered) */}
         <div className="grid">
-          {rentals.map((item) => (
+          {visibleRentals.map((item) => (
             <ProductCard key={item._id} item={item} />
           ))}
         </div>

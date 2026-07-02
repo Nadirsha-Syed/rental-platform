@@ -85,14 +85,29 @@ export const createBooking = async (req, res) => {
   }
 };
 
-// ✅ 2. Get My Bookings (Borrower Perspective)
+// ✅ 2. Get My Bookings (Borrower Perspective - Deeply Populated for UI Tracking)
 export const getMyBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({ user: req.user._id }).populate("rentalItem");
-    return res.json(bookings);
+    // Queries all bookings initiated by the logged-in user
+    const bookings = await Booking.find({ user: req.user._id })
+      .populate({
+        path: "rentalItem",
+        select: "title pricePerHour image location owner",
+        populate: {
+          path: "owner",
+          select: "name email", // Grants access to 'booking.rentalItem.owner.email' on frontend
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    return res.json({
+      success: true,
+      count: bookings.length,
+      data: bookings,
+    });
   } catch (error) {
     console.log("GET MY BOOKINGS ERROR:", error);
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -164,7 +179,7 @@ export const cancelBooking = async (req, res) => {
     const bookingId = req.params.id.trim();
     const booking = await Booking.findById(bookingId).populate("rentalItem").populate("user", "name email");
 
-    if (!booking) {
+  if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
