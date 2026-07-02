@@ -76,7 +76,7 @@ export const createBooking = async (req, res) => {
       item.owner.email,
       item.owner.name,
       item.title,
-      req.user.name,
+      req.user.name || "A User",
       totalPrice
     ).catch((mailErr) => console.error("⚠️ Background Mail Error (Create Booking):", mailErr.message));
 
@@ -91,7 +91,6 @@ export const createBooking = async (req, res) => {
 // ✅ 2. Get My Bookings (Borrower Perspective - Fallback Safe ID Assignment)
 export const getMyBookings = async (req, res) => {
   try {
-    // 🔍 Fallback validation check: tries _id first, defaults to .id if missing
     const currentUserId = req.user?._id || req.user?.id;
 
     if (!currentUserId) {
@@ -186,7 +185,7 @@ export const getOwnerRevenue = async (req, res) => {
   }
 };
 
-// ✅ 5. Cancel/Reject Booking
+// ✅ 5. Cancel/Reject Booking (Fixed Wallet Balance Leak)
 export const cancelBooking = async (req, res) => {
   try {
     const bookingId = req.params.id.trim();
@@ -198,14 +197,16 @@ export const cancelBooking = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Safe comparison mapping handles whether the reference object string is raw or embedded populated object
     const borrowerId = booking.user?._id || booking.user;
     const isBorrower = borrowerId && borrowerId.toString() === currentUserId.toString();
     
-    // Extract item details and populate asset owner attributes dynamically
     const itemWithOwner = await RentalItem.findById(booking.rentalItem._id).populate("owner", "name email");
+    if (!itemWithOwner) {
+      return res.status(404).json({ message: "Associated rental item missing" });
+    }
     const isOwner = itemWithOwner.owner._id.toString() === currentUserId.toString();
 
+    // Verification Guard
     if (!isBorrower && !isOwner) {
       return res.status(403).json({ message: "Not authorized to reject or cancel this booking" });
     }
@@ -214,9 +215,9 @@ export const cancelBooking = async (req, res) => {
       return res.status(400).json({ message: "Booking already cancelled" });
     }
 
-    // 💰 IF CONFIRMED ORDER WAS CANCELLED: Deduct the revenue from the lender's ledger wallet balance
-    if (booking.status === "confirmed" && isOwner) {
-      await User.findByIdAndUpdate(currentUserId, {
+    // 💰 FIXED: If a confirmed booking drops out, ALWAYS claw back balance from lender wallet, regardless of who pressed cancel.
+    if (booking.status === "confirmed") {
+      await User.findByIdAndUpdate(itemWithOwner.owner._id, {
         $inc: { walletBalance: -booking.totalPrice }
       });
     }
@@ -224,16 +225,13 @@ export const cancelBooking = async (req, res) => {
     booking.status = "cancelled";
     await booking.save();
 
-    // 🔥 OPTIMIZATION: Return data back to client immediately
     res.json({ message: "Booking cancelled successfully", booking });
 
-    // 🔥 Run cancellation alert emails out-of-band in the background
+    // 🔥 Background Mail Tasks
     if (isOwner) {
-      // Owner rejected it -> alert borrower
       sendBookingCancelledEmail(booking.user.email, booking.user.name, itemWithOwner.title, "borrower")
         .catch((mailErr) => console.error("⚠️ Background Mail Error (Reject Notification):", mailErr.message));
     } else if (isBorrower) {
-      // Borrower withdrew request -> alert owner
       sendBookingCancelledEmail(itemWithOwner.owner.email, itemWithOwner.owner.name, itemWithOwner.title, "owner")
         .catch((mailErr) => console.error("⚠️ Background Mail Error (Cancel Notification):", mailErr.message));
     }
@@ -270,29 +268,26 @@ export const confirmBooking = async (req, res) => {
       return res.status(400).json({ message: "Booking has expired" });
     }
 
-    // 1. Update booking status
     booking.status = "confirmed";
     await booking.save();
 
-    // 💰 2. LEDGER UPDATE: Credit the lender's user model walletBalance field directly!
+    // 💰 LEDGER UPDATE: Credit the lender's walletBalance directly!
     await User.findByIdAndUpdate(currentUserId, {
       $inc: { walletBalance: booking.totalPrice }
     });
 
-    // 🔥 OPTIMIZATION: Return success response to the client immediately
     res.json({
       success: true,
       message: "Booking confirmed successfully and earnings credited to wallet!",
       data: booking,
     });
 
-    // 🔥 Run confirmation email out-of-band in background task loop
     sendBookingConfirmedEmail(
       booking.user.email,
       booking.user.name,
       booking.rentalItem.title,
       booking.totalPrice,
-      req.user.email 
+      req.user.email || "lender@market.com"
     ).catch((mailErr) => console.error("⚠️ Background Mail Error (Confirm Booking):", mailErr.message));
 
   } catch (error) {
