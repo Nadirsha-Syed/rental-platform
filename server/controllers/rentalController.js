@@ -16,6 +16,7 @@ export const createBooking = async (req, res) => {
     console.log("USER:", req.user);
 
     const { rentalItemId, startTime, endTime } = req.body;
+    const currentUserId = req.user?._id || req.user?.id;
 
     // Validation
     if (!rentalItemId || !startTime || !endTime) {
@@ -58,7 +59,7 @@ export const createBooking = async (req, res) => {
     // Create the booking
     const booking = await Booking.create({
       rentalItem: rentalItemId,
-      user: req.user._id || req.user.id,
+      user: currentUserId,
       startTime: start,
       endTime: end,
       totalPrice,
@@ -197,7 +198,9 @@ export const cancelBooking = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    const isBorrower = booking.user._id.toString() === currentUserId.toString() || booking.user.toString() === currentUserId.toString();
+    // Safe comparison mapping handles whether the reference object string is raw or embedded populated object
+    const borrowerId = booking.user?._id || booking.user;
+    const isBorrower = borrowerId && borrowerId.toString() === currentUserId.toString();
     
     // Extract item details and populate asset owner attributes dynamically
     const itemWithOwner = await RentalItem.findById(booking.rentalItem._id).populate("owner", "name email");
