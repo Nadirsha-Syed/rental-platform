@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 /**
- * Reusable Core Email Sender Utility (Optimized for Cloud Environments)
+ * Reusable Core Email Sender Utility (Fortified for Cloud IPv4-Strict Containers)
  * @param {Object} options - Email options
  * @param {string} options.to - Recipient email address
  * @param {string} options.subject - Email subject line
@@ -9,17 +9,18 @@ import nodemailer from "nodemailer";
  */
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    // 1. Initialize the Nodemailer transporter engine explicitly targeting Port 587
+    // 1. Force strict IPv4 address connection resolution parameters
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
-      secure: false, // Must be false for port 587 to allow upgrade to secure TLS via STARTTLS
+      secure: false, // Must be false for port 587
+      family: 4, // 🔥 CRITICAL FIX: Forces Nodemailer to connect over IPv4, bypassing Render's unreachable IPv6 route!
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS, // Your secure 16-character Google App Password
       },
       tls: {
-        rejectUnauthorized: false, // Prevents cloud hosting container handshakes from dropping connection
+        rejectUnauthorized: false, // Prevents cloud container network handshake drops
       },
     });
 
@@ -36,7 +37,6 @@ export const sendEmail = async ({ to, subject, html }) => {
     console.log(`📨 Email dispatched successfully. Message ID: ${info.messageId}`);
     return info;
   } catch (error) {
-    // Highly visible log flag to trace any residual authentication issues or missing variables
     console.error("❌ NODEMAILER CONNECTION ERROR DETAIL:", error);
     throw new Error("Failed to send transactional email notification.");
   }
