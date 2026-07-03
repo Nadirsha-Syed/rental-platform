@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config/api"; // ✅ 1. Import your dynamic API configuration url map!
 
 export default function AddRental() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export default function AddRental() {
     pricePerHour: "",
     description: "",
     image: "",
-    category: "Electronics" // 🔥 Changed default from "" to a valid string matching your schema/filter options
+    category: "Electronics" 
   });
 
   const [preview, setPreview] = useState("");
@@ -60,7 +61,8 @@ export default function AddRental() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/rentals", {
+      // ✅ 2. FIXED: Replaced hardcoded localhost with your dynamic API_BASE_URL wrapper hook!
+      const res = await fetch(`${API_BASE_URL}/api/rentals`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +142,6 @@ export default function AddRental() {
             onChange={handleChange}
           />
 
-          {/* 📂 Syncing values exactly with ProductsPage.jsx */}
           <select
             name="category"
             value={form.category}
