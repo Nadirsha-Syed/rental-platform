@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 /**
- * Reusable Core Email Sender Utility (Using Native Service Map)
+ * Reusable Core Email Sender Utility (Configured for SendGrid API SMTP)
  * @param {Object} options - Email options
  * @param {string} options.to - Recipient email address
  * @param {string} options.subject - Email subject line
@@ -9,22 +9,22 @@ import nodemailer from "nodemailer";
  */
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    // 1. Initialize the Nodemailer transporter engine using native pooling
+    // 1. Initialize the Nodemailer transporter using SendGrid's cloud cluster
     const transporter = nodemailer.createTransport({
-      service: "gmail", // 🔥 Forces Nodemailer to handle internal optimal port configurations automatically
+      host: "smtp.sendgrid.net",
+      port: 587,
+      secure: false, // TLS upgrades seamlessly over port 587
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Your secure 16-character Google App Password (no spaces)
+        user: "apikey", // ⚠️ Must be the literal string "apikey"
+        pass: process.env.EMAIL_PASS, // Your SendGrid API Key starting with SG.
       },
-      pool: true, // Uses persistent connections instead of establishing a new handshake every single time
-      rateLimit: true,
-      maxConnections: 5,
-      maxMessages: 100
     });
 
-    // 2. Define structural layout parameters
+    // 2. Define structural parameters using your verified sender identity
+    const verifiedSender = process.env.SENDER_EMAIL || process.env.EMAIL_USER;
+    
     const mailOptions = {
-      from: `"P2P Marketplace" <${process.env.EMAIL_USER}>`,
+      from: `"P2P Marketplace" <${verifiedSender}>`,
       to,
       subject,
       html,
@@ -32,11 +32,11 @@ export const sendEmail = async ({ to, subject, html }) => {
 
     // 3. Dispatch the message asynchronously
     const info = await transporter.sendMail(mailOptions);
-    console.log(`📨 Email dispatched successfully. Message ID: ${info.messageId}`);
+    console.log(`📨 SendGrid delivered email successfully. Message ID: ${info.messageId}`);
     return info;
   } catch (error) {
-    console.error("❌ NODEMAILER CONNECTION ERROR DETAIL:", error);
-    throw new Error("Failed to send transactional email notification.");
+    console.error("❌ SENDGRID SMTP ERROR DETAIL:", error);
+    throw new Error("Failed to send transactional email notification via SendGrid.");
   }
 };
 
