@@ -15,10 +15,12 @@
 /* THE GRID - Forces side-by-side alignment */
 .grid {
   display: grid !important;
-  /* 🔄 UPDATED: auto-fill implicitly preserves empty columns to the right instead of widening content */
+  /* 🔄 auto-fill creates empty hidden columns to the right instead of widening content */
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
   gap: 32px 24px !important;
   width: 100%;
+  /* 🔐 FIXED: Prevents low-density lists from centering or ballooning column tracks across wide screens */
+  justify-content: start !important; 
 }
 
 /* THE CARD - Modest & Clean */
@@ -29,8 +31,8 @@
   display: flex;
   flex-direction: column;
   transition: opacity 0.2s ease;
-  /* 🔐 FIXED: Prevents cards from growing infinitely on ultra-wide desktop monitors */
-  max-width: 280px;
+  /* 🔐 FIXED: Locks the explicit boundaries of the card structure */
+  max-width: 260px !important;
   width: 100%;
 }
 
