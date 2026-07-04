@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./MyRentals.css";
-// 🔥 MODIFIED: Imported centralized API base configurations 
+// 🔥 Centralized API base configurations 
 import API_BASE_URL from "../config/api"; 
 
 export default function MyRentals() {
@@ -23,7 +23,6 @@ export default function MyRentals() {
       }
       setLoading(true);
       
-      // 🔥 MODIFIED: Applied dynamic base path string templates
       const res = await fetch(`${API_BASE_URL}/api/rentals/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -51,7 +50,6 @@ export default function MyRentals() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this listing?")) return;
     try {
-      // 🔥 MODIFIED: Applied dynamic base path string templates
       const res = await fetch(`${API_BASE_URL}/api/rentals/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
@@ -76,7 +74,6 @@ export default function MyRentals() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      // 🔥 MODIFIED: Applied dynamic base path string templates
       const res = await fetch(`${API_BASE_URL}/api/rentals/${editForm.id}`, {
         method: "PUT",
         headers: {
@@ -91,10 +88,13 @@ export default function MyRentals() {
 
       const updatedData = await res.json();
       if (res.ok) {
+        // Handle backend responses gracefully depending on whether it sends an object or a nested envelope
+        const targetItem = updatedData.data || updatedData;
         setRentals((prev) =>
-          prev.map((r) => (r._id === editForm.id ? updatedData : r))
+          prev.map((r) => (r._id === editForm.id ? { ...r, ...targetItem } : r))
         );
         setIsModalOpen(false);
+        fetchMyRentals(); // 🔄 Refresh to ensure frontend maps clean visual metrics instantly
       }
     } catch (err) {
       console.error("Update failed:", err);
@@ -113,16 +113,41 @@ export default function MyRentals() {
         </div>
 
         {rentals.length === 0 ? (
-          <div className="emptyState">
-            <p>You haven't listed anything yet.</p>
-            <button onClick={() => navigate("/add-rental")}>List an Item</button>
+          <div className="emptyState" style={{ textAlign: "center", padding: "40px" }}>
+            <p style={{ color: "rgb(var(--text-muted))", marginBottom: "20px" }}>You haven't listed anything yet.</p>
+            <button 
+              onClick={() => navigate("/add-rental")}
+              style={{
+                backgroundColor: "rgb(var(--color-primary))",
+                color: "white",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                fontWeight: "600",
+                cursor: "pointer"
+              }}
+            >
+              List an Item
+            </button>
           </div>
         ) : (
-          <div className="rentalsGrid">
+          /* 🧾 Rentals Grid Wrapper */
+          /* ✅ FIXED: Applied explicit 260px tracks and left-justification inline to match the main catalog behavior */
+          <div 
+            className="rentalsGrid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, 260px)",
+              gap: "2rem",
+              width: "100%",
+              justifyContent: "start",
+              justifyItems: "start"
+            }}
+          >
             {rentals.map((item) => (
               <div key={item._id} className="rentalCard">
                 <div className="imageWrapper">
-                  <img src={item.image} alt={item.title} />
+                  <img src={item.image || "https://via.placeholder.com/300"} alt={item.title} />
                 </div>
                 <div className="cardContent">
                   <h3>{item.title}</h3>
@@ -141,7 +166,7 @@ export default function MyRentals() {
         {isModalOpen && (
           <div className="modalOverlay">
             <div className="modalContent">
-              <h2>Edit Listing</h2>
+              <h2 style={{ margin: "0 0 10px 0" }}>Edit Listing</h2>
               <form onSubmit={handleUpdate}>
                 <div className="inputGroup">
                   <label>Item Name</label>

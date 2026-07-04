@@ -1,9 +1,12 @@
+/* CONTAINER */
 .myRentalsPage {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
+  /* 🎨 THEME FIX: Main layout background adaptation */
+  background: transparent; 
 }
 
 .headerSection {
@@ -11,55 +14,80 @@
   margin-bottom: 3rem;
 }
 
+.headerSection h1 {
+  color: rgb(var(--text-main));
+}
+
+.headerSection p {
+  color: rgb(var(--text-muted));
+}
+
+/* THE GRID - Stops dynamic banner stretching */
 .rentalsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: grid !important;
+  /* 🔄 auto-fill implicit columns to the right instead of widening content */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
   gap: 2rem;
+  width: 100%;
+  justify-content: start !important;
 }
 
 /* Card Styling */
 .rentalCard {
-  background: white;
+  /* 🎨 THEME FIX: Respects active theme surface background colors */
+  background: var(--surface);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eee;
+  border: 1px solid rgba(var(--text-muted), 0.2);
   display: flex;
   flex-direction: column;
+  
+  /* 🔐 CRITICAL FIX: Locks max structural boundaries */
+  max-width: 260px !important; 
+  width: 100%;
 }
 
 .imageWrapper {
   width: 100%;
   height: 200px;
   overflow: hidden;
+  background: rgba(var(--text-muted), 0.1);
 }
 
 .imageWrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 👈 Prevents stretching */
+  object-fit: cover; 
 }
 
 .cardContent {
   padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
 }
 
 .cardContent h3 {
   margin: 0 0 8px 0;
   font-size: 1.1rem;
-  color: #1a1a1a;
+  color: rgb(var(--text-main));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .priceTag {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #4f46e5;
+  color: rgb(var(--color-primary));
   margin-bottom: 15px;
 }
 
 .priceTag span {
   font-size: 0.85rem;
-  color: #666;
+  color: rgb(var(--text-muted));
   font-weight: 400;
 }
 
@@ -67,6 +95,7 @@
 .actionButtons {
   display: flex;
   gap: 10px;
+  margin-top: auto;
 }
 
 .editBtn, .deleteBtn {
@@ -83,17 +112,13 @@
 }
 
 .editBtn { 
-  background: #f3f4f6; 
-  color: #374151; 
+  background: rgba(var(--text-muted), 0.15); 
+  color: rgb(var(--text-main)); 
 }
 
 .editBtn:hover {
-  background: #e5e7eb;
+  background: rgba(var(--text-muted), 0.25);
   transform: translateY(-1px);
-}
-
-.editBtn:active {
-  transform: translateY(0);
 }
 
 .deleteBtn { 
@@ -104,20 +129,15 @@
 .deleteBtn:hover {
   background: #fecaca;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.1);
 }
 
-.deleteBtn:active {
-  transform: translateY(0);
-}
-
-/* 🪟 Modal Styling (FIXED) */
+/* 🪟 Modal Styling (FIXED FOR DARK MODE) */
 .modalOverlay {
-  position: fixed; /* 👈 Stays over everything */
+  position: fixed; 
   top: 0; left: 0;
   width: 100vw; height: 100vh;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px); /* Frosted glass */
+  backdrop-filter: blur(8px); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -125,7 +145,9 @@
 }
 
 .modalContent {
-  background: white;
+  background: var(--surface);
+  border: 1px solid rgba(var(--text-muted), 0.2);
+  color: rgb(var(--text-main));
   padding: 2.5rem;
   border-radius: 20px;
   width: 90%;
@@ -145,14 +167,16 @@
 
 .inputGroup label {
   font-weight: 600;
-  color: #444;
+  color: rgb(var(--text-main));
 }
 
 .inputGroup input {
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(var(--text-muted), 0.3);
   border-radius: 10px;
   outline: none;
+  background: transparent;
+  color: rgb(var(--text-main));
 }
 
 .modalFooter {
@@ -161,5 +185,21 @@
   gap: 12px;
 }
 
-.primaryBtn { background: #4f46e5; color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; }
-.secondaryBtn { background: #eee; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; }
+.primaryBtn { 
+  background: rgb(var(--color-primary)); 
+  color: white; 
+  border: none; 
+  padding: 12px 24px; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  font-weight: 600; 
+}
+
+.secondaryBtn { 
+  background: rgba(var(--text-muted), 0.2); 
+  color: rgb(var(--text-main));
+  border: none; 
+  padding: 12px 24px; 
+  border-radius: 10px; 
+  cursor: pointer; 
+}
