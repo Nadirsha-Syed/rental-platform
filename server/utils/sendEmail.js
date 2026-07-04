@@ -12,7 +12,7 @@ export const sendEmail = async ({ to, subject, html }) => {
     // 1. Initialize the Nodemailer transporter using SendGrid's cloud cluster
     const transporter = nodemailer.createTransport({
       host: "smtp.sendgrid.net",
-      port: 587,
+      port: 465,
       secure: false, // TLS upgrades seamlessly over port 587
       auth: {
         user: "apikey", // ⚠️ Must be the literal string "apikey"
