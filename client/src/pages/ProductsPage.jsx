@@ -122,16 +122,17 @@ export default function ProductsPage() {
         )}
 
         {/* 🧾 Products Grid */}
-        {/* ✅ FIXED: Applied strict inline CSS structural overrides to anchor low-count layouts */}
+        {/* ✅ FIXED: Changed column layout tracks from minmax 1fr to a static 260px boundary */}
         <div 
           className="grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, 260px)", 
             gap: "32px 24px",
             width: "100%",
             justifyContent: "start",
-            justifyItems: "start"
+            justifyItems: "start",
+            marginTop: "20px"
           }}
         >
           {visibleRentals.map((item) => (
