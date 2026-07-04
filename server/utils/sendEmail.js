@@ -1,7 +1,10 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
+
+// 🔐 Initialize SendGrid with your verified API Key string directly from the cloud environment
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
- * Reusable Core Email Sender Utility (Configured for SendGrid API SMTP)
+ * Reusable Core Email Sender Utility (Powered by SendGrid Secure Web API)
  * @param {Object} options - Email options
  * @param {string} options.to - Recipient email address
  * @param {string} options.subject - Email subject line
@@ -9,34 +12,31 @@ import nodemailer from "nodemailer";
  */
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    // 1. Initialize the Nodemailer transporter using SendGrid's cloud cluster
-    const transporter = nodemailer.createTransport({
-      host: "smtp.sendgrid.net",
-      port: 465,
-      secure: false, // TLS upgrades seamlessly over port 587
-      auth: {
-        user: "apikey", // ⚠️ Must be the literal string "apikey"
-        pass: process.env.EMAIL_PASS, // Your SendGrid API Key starting with SG.
-      },
-    });
+    const verifiedSender = process.env.SENDER_EMAIL || "nadirshasyed835@gmail.com";
 
-    // 2. Define structural parameters using your verified sender identity
-    const verifiedSender = process.env.SENDER_EMAIL || process.env.EMAIL_USER;
-    
-    const mailOptions = {
-      from: `"P2P Marketplace" <${verifiedSender}>`,
+    // 📦 Build the compliant API message payload object
+    const msg = {
       to,
+      from: {
+        name: "P2P Marketplace",
+        email: verifiedSender, // Must match your Single Sender Verification email
+      },
       subject,
       html,
     };
 
-    // 3. Dispatch the message asynchronously
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`📨 SendGrid delivered email successfully. Message ID: ${info.messageId}`);
-    return info;
+    // 🚀 Dispatch using secure HTTPS out-of-band requests
+    const response = await sgMail.send(msg);
+    console.log(`📨 Web API Email delivered to SendGrid cluster. Status Code: ${response[0].statusCode}`);
+    return response;
   } catch (error) {
-    console.error("❌ SENDGRID SMTP ERROR DETAIL:", error);
-    throw new Error("Failed to send transactional email notification via SendGrid.");
+    console.error("❌ SENDGRID WEB API ERROR DETAIL:");
+    if (error.response) {
+      console.error(error.response.body); // Displays exact form compliance reason if dropped
+    } else {
+      console.error(error);
+    }
+    throw new Error("Failed to send transactional email notification via SendGrid API.");
   }
 };
 
