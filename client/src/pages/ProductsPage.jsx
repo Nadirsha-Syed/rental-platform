@@ -121,8 +121,19 @@ export default function ProductsPage() {
           </p>
         )}
 
-        {/* 🧾 Products Grid (Mapping visibleRentals safely filtered) */}
-        <div className="grid">
+        {/* 🧾 Products Grid */}
+        {/* ✅ FIXED: Applied strict inline CSS structural overrides to anchor low-count layouts */}
+        <div 
+          className="grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: "32px 24px",
+            width: "100%",
+            justifyContent: "start",
+            justifyItems: "start"
+          }}
+        >
           {visibleRentals.map((item) => (
             <ProductCard key={item._id} item={item} />
           ))}
