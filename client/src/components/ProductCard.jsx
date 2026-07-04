@@ -7,74 +7,65 @@ export default function ProductCard({ item }) {
     <div 
       className="card" 
       onClick={() => navigate(`/products/${item._id}`)}
-      style={{
-        width: "260px",
-        maxWidth: "260px",
+      style={{ 
+        width: "260px",            
         minWidth: "260px",
-        height: "360px",          // 🔐 Fixes vertical height so short/long descriptions don't cause mismatch
-        display: "flex",
+        maxWidth: "260px",
+        height: "360px",           
+        display: "flex", 
         flexDirection: "column",
-        justifyContent: "space-between",
-        border: "1px solid #e5e7eb",
+        // 🎨 THEME FIX: Uses your theme's variable fallback properties instead of hardcoded white
+        backgroundColor: "var(--bg-card, rgb(var(--bg-surface, 255, 255, 255)))",
         borderRadius: "14px",
+        border: "1px solid var(--border-color, #e5e7eb)",
         overflow: "hidden",
-        backgroundColor: "#ffffff",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+        cursor: "pointer",
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
         boxSizing: "border-box"
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.05)";
       }}
     >
       
-      {/* 🖼️ Match with .thumb in index.css */}
-      <div 
-        className="thumb"
-        style={{
-          width: "100%",
-          height: "180px",        // 🔐 Forces all card images to share the exact same height boundary
-          minHeight: "180px",
-          overflow: "hidden",
-          position: "relative",
-          margin: 0
-        }}
-      >
+      {/* 🖼️ Fixed Aspect Ratio Thumbnail */}
+      <div style={{ width: "100%", height: "180px", overflow: "hidden", position: "relative", backgroundColor: "#f3f4f6" }}>
         <img 
           src={item.image || "https://via.placeholder.com/300"} 
           alt={item.title} 
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover"    // 📐 Keeps images from stretching abnormally
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <span className="badge">Available</span>
       </div>
 
-      {/* 📝 Match with .meta in index.css */}
-      <div 
-        className="meta"
-        style={{
-          padding: "12px 16px 16px 16px",
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 1,
-          justifyContent: "space-between"
-        }}
-      >
+      {/* 📝 Normalized Metadata Box */}
+      <div style={{ padding: "16px", display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "space-between" }}>
         <div>
-          <h3 style={{ margin: "0 0 4px 0", fontSize: "16px", fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {/* 🎨 THEME FIX: text uses dynamic main variable mapping */}
+          <h3 style={{ margin: "0 0 4px 0", fontSize: "16px", fontWeight: "600", color: "rgb(var(--text-main, 31, 41, 55))", textTransform: "capitalize", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {item.title}
           </h3>
-          
-          {/* Dynamic location - no hardcoding */}
-          <p className="loc" style={{ margin: "0", fontSize: "14px" }}>
-            {item.location ? item.location : "No location"}
+          {/* 🎨 THEME FIX: location text uses dynamic muted variable mapping */}
+          <p style={{ margin: "0", fontSize: "14px", color: "rgb(var(--text-muted, 107, 114, 128))", textTransform: "capitalize" }}>
+            📍 {item.location || "SR University"}
           </p>
         </div>
 
-        {/* 💰 Match with .row and .price in index.css */}
-        <div className="row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px" }}>
-          <span className="price" style={{ fontSize: "16px", fontWeight: "700" }}>
-            ₹{item.pricePerHour}/hr
+        {/* 💰 Pricing Frame Anchor Row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px" }}>
+          {/* 🎨 THEME FIX: price typography tracks text-main dynamic states */}
+          <span style={{ fontSize: "16px", fontWeight: "700", color: "rgb(var(--text-main, 17, 24, 39))" }}>
+            ₹{item.pricePerHour}<span style={{ fontSize: "12px", fontWeight: "400", color: "rgb(var(--text-muted, 107, 114, 128))" }}>/hr</span>
           </span>
-          <button className="btn">View</button>
+          <button style={{ backgroundColor: "rgb(var(--color-primary, 37, 99, 235))", color: "#ffffff", padding: "6px 14px", borderRadius: "8px", fontSize: "14px", fontWeight: "600", border: "none" }}>
+            View
+          </button>
         </div>
       </div>
 
