@@ -27,7 +27,7 @@ export default function Landing() {
         </h1>
 
         <p className="text-textMuted text-center mb-8">
-          Premium property management experience
+          Smart P2P rentals. Secure, conflict-free, and ledger-backed
         </p>
 
         <button onClick={()=>navigate("/products")}  className="w-full bg-primary hover:scale-105 transform transition rounded-xl py-3 font-semibold text-white shadow-lg">
