@@ -47,11 +47,15 @@ This platform supports rentals for various asset types including:
 - Cloud database integration (MongoDB Atlas)
 
 ---
-# Screenshots
-![Booking Page](screenshots/booking_page.png)
-![Rentals Page](screenshots/rentals.png)
-![Add Rental Page](screenshots/add_rental.png)
-![Login Page](screenshots/login.png)
+# 🎬 Interactive Demo & Live Links
+
+To see the complete full-stack workflow—including user registration, asset management, and the sandbox payment pipeline—check out the live instances below:
+
+- 🌐 **Live Deployed Application:** https://rental-platform-blue.vercel.app
+- 📺 **Video Walkthrough:** https://youtu.be/7Us05pJXwQA
+
+*Note: The platform is currently running in development/sandbox mode. Payments are integrated using Razorpay Test Mode, allowing you to simulate checkouts without real credentials.*
+
 ---
 # 📅 Development Log
 
@@ -406,6 +410,82 @@ Three themes implemented:
 ✔ Application working as a complete full-stack system  
 
 ---
+## ✅ Day 20 – Transactional Email Infrastructure (SendGrid Integration)
+
+### Features Implemented
+- Ripped out traditional Nodemailer/SMTP configurations due to cloud production firewall port blocks (`587`).
+- Integrated the official SendGrid HTTP Web API for secure external communications.
+- Built automated notification layers to trigger booking status updates to users.
+- Implemented real-time email alerts matching actions between owners and customers.
+
+### Infrastructure Architecture
+- Network-resilient notifications using secure HTTP POST requests instead of fragile SMTP tunnels.
+- Environment-locked API key authentication to safeguard transport layers.
+- Non-blocking async routing flows ensuring email execution doesn't slow down database writes.
+
+✔ Switched to standard Web APIs to guarantee reliable transactional mail delivery in production.
+
+---
+
+## ✅ Day 21 – Production-Ready Card Styling & Theme Adaptation
+
+### Features Implemented
+- Applied strict `max-width: 260px` layout caps to the item showcase grids.
+- Refactored hardcoded CSS card components to use dynamic style design tokens.
+- Fixed dark mode color visibility bugs where text accidentally blended into backgrounds.
+
+### Style Architecture
+- Adaptive layouts mapping directly to global CSS variables (`var(--surface)`, `rgb(var(--text-main))`).
+- UI stabilization enforcing identical aspect ratios for listed assets regardless of uploaded image sizes.
+- Full runtime theme responsiveness ensuring seamless light, neon, and corporate mode transformations.
+
+✔ Resolved styling bugs and secured card layout consistency across all visual themes.
+
+---
+
+## ✅ Day 22 – Vendor Operations Module (Edit & Delete UI)
+
+### Features Implemented
+- Designed and integrated interactive pop-up modal interfaces for active listings.
+- Connected dashboard layout elements to functional backend REST endpoints (`PUT` and `DELETE`).
+- Built instant UI state filters that refresh listing grids without requiring a full manual browser reload.
+- Implemented safe user-facing deletion confirmation logic steps.
+
+### Operations Architecture
+- Secure data parsing binding individual form fields directly to React state models (`editForm`).
+- Dual-action controller workflows linking data validation pipelines seamlessly from UI to MongoDB collections.
+
+✔ Enabled complete self-service management tools for owners handling active platform assets.
+
+---
+
+## ✅ Day 23 – Payment Gateway Integration (Razorpay Sandbox)
+
+### Features Implemented
+- Integrated the official Razorpay Web Checkout client SDK scripts.
+- Configured backend routing pipelines to initialize transaction order tokens cleanly.
+- Set up secure client verification loops checking checkout response signatures.
+
+### Financial Architecture
+- Safe isolated sandbox operating mode preventing genuine balance calls during active evaluation checks.
+- Two-step signature verification protecting booking update methods from falsified local client inputs.
+
+✔ Established secure transactional flows verifying standard mock checkouts end-to-end.
+
+---
+
+## ✅ Day 24 – Layout Fluidity & Grid Fixes
+
+### Features Implemented
+- Re-architected container layouts inside user tracking pages from fluid `auto-fit` setups to strict `auto-fill` specifications.
+- Implemented explicit fallback track alignments directly within inline JSX container maps.
+- Centered layout items cleanly while locking unpopulated space tightly to the left side of the screen.
+
+### Layout Architecture
+- Column track control maintaining uniform layout boundaries (`260px`) regardless of total array item lengths.
+- Structural prevention blocking single-item listings from expanding horizontally to fill whole screen widths.
+
+✔ Restructured container layouts to lock product card aspect ratios across every viewport size.
 
 # 📊 UPDATED CURRENT STATUS
 
@@ -432,20 +512,48 @@ Three themes implemented:
 ✔ API error handling    
 
 ---
+# 🔐 Security Highlights
 
-# 🚀 NEXT PHASE
+- Stateless JWT-based authentication architecture
+- Secure blowfish password hashing via bcrypt
+- Custom access control middleware validating ownership of data payloads (`rental.owner === req.user._id`)
+- Firewall-safe email delivery using SendGrid's HTTP Web API
+- Backend-locked price calculations to prevent tampering with transaction totals
 
-- Edit / Delete Rentals UI  
-- Payment Integration (Razorpay)  
-- Deployment (Production Environment)  
-- Performance optimization  
-- UI/UX improvements
+---
+
+# 📊 UPDATED CURRENT STATUS
+
+### Backend  
+✔ Authentication system  
+✔ Rental module  
+✔ Owner-based authorization  
+✔ Booking system & conflict prevention  
+✔ SendGrid HTTP Web API notification integration  
+✔ Razorpay Sandbox order verification APIs  
+✔ Stable API responses  
+
+### Frontend  
+✔ React + Vite setup  
+✔ Multi-theme system via global CSS design tokens  
+✔ Component-based marketplace grid featuring layout-stabilized cards  
+✔ Dynamic Add Rental flow with automatic Cloudinary uploads  
+✔ Complete Edit / Delete management controls inside the user dashboard  
+✔ Razorpay testing sandbox implementation  
+
+---
+
+# 🚀 NEXT PHASE (ROADMAP)
+
+- **Demand-Driven Push Notifications:** Automatically match and alert accessory vendors when customers search for unlisted niche assets (e.g., specific camera batteries) to bridge inventory gaps.
+- **Rapido-Style Bidding System:** Allow customers to offer flexible premiums during high-demand windows (like university exam blocks) to incentivize faster fulfillment responses from owners.
+- **Performance Optimizations:** Introduce paginated data fetching loops and optimized database index pathways across rental documents.
+
 ---
 
 ## 💡 Vision
 
 To build a scalable, production-ready rental marketplace capable of serving:
-
 - Urban vehicle rentals  
 - Agricultural equipment sharing  
 - Event & media rentals  
