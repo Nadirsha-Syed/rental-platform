@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import API_BASE_URL from "../config/api";
-import "./Dashboard.css"; // Ensure this file exists for styling matches!
+import "./Dashboard.css"; 
 
 export default function Dashboard() {
   const [myBookings, setMyBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Fetch all bookings initiated by the logged-in user (Borrower Perspective)
+  
   const fetchMyBookings = async () => {
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
@@ -34,7 +34,6 @@ export default function Dashboard() {
     fetchMyBookings();
   }, []);
 
-  // 🔴 Allow borrower to cancel their own pending requests out-of-band
   const handleUserCancel = async (bookingId) => {
     if (!window.confirm("Are you sure you want to cancel this booking request?")) return;
 
@@ -49,7 +48,7 @@ export default function Dashboard() {
 
       if (res.ok) {
         alert("Booking request cancelled successfully.");
-        fetchMyBookings(); // 🔄 Instantly reload list layout metrics
+        fetchMyBookings();
       } else {
         const data = await res.json();
         alert(data.message || "Failed to cancel request");

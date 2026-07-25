@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import { ThemeContext } from "../context/ThemeContext";
-import { AuthContext } from "../context/AuthContext"; // 🔥 MODIFIED: Import global AuthContext
+import { AuthContext } from "../context/AuthContext"; 
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
-  // 🔥 MODIFIED: Extract live, reactive values from centralized AuthContext pipeline
   const { user, logout, isAuthenticated } = useContext(AuthContext); 
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    logout(); // 🔥 MODIFIED: Dispatches global context wipe out-of-the-box
+    logout(); 
     navigate("/login");
   };
 
@@ -52,7 +52,7 @@ export default function Navbar() {
         {/* RIGHT - Actions */}
         <div className="navActions">
 
-          {/* 🎨 Theme Toggle */}
+          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             className={`themeSwitch ${
@@ -62,7 +62,10 @@ export default function Navbar() {
             <span className="switchBall"></span>
           </button>
 
-          {/* 👤 Circular Profile Avatar */}
+          {/* Notification Bell */ }
+          {isAuthenticated && <NotificationBell />}
+
+          {/*Profile */}
           <Link to="/profile" className="profileAvatar" title="Profile & Account">
             {isAuthenticated && user?.name ? user.name[0].toUpperCase() : "👤"}
           </Link>

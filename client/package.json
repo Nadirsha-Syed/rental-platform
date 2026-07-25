@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "Rental Hub",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@react-oauth/google": "^0.13.4",
+    "axios": "^1.18.1",
+    "lucide-react": "^1.26.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.1"
