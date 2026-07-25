@@ -1,6 +1,5 @@
 import sgMail from "@sendgrid/mail";
 
-// 🔐 Initialize SendGrid with your verified API Key string directly from the cloud environment
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
@@ -14,18 +13,17 @@ export const sendEmail = async ({ to, subject, html }) => {
   try {
     const verifiedSender = process.env.SENDER_EMAIL || "nadirshasyed835@gmail.com";
 
-    // 📦 Build the compliant API message payload object
+    // compliant API message payload object
     const msg = {
       to,
       from: {
         name: "P2P Marketplace",
-        email: verifiedSender, // Must match your Single Sender Verification email
+        email: verifiedSender, 
       },
       subject,
       html,
     };
 
-    // 🚀 Dispatch using secure HTTPS out-of-band requests
     const response = await sgMail.send(msg);
     console.log(`📨 Web API Email delivered to SendGrid cluster. Status Code: ${response[0].statusCode}`);
     return response;
@@ -40,8 +38,8 @@ export const sendEmail = async ({ to, subject, html }) => {
   }
 };
 
-/**
- * 🎫 Template 1: Notify Asset Owner about a New Booking Request
+/*
+ Template 1: Notify Asset Owner about a New Booking Request
  */
 export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borrowerName, totalPrice) => {
   const subject = `📥 New Rental Request for your ${itemTitle}!`;
@@ -69,8 +67,8 @@ export const sendNewBookingEmail = async (ownerEmail, ownerName, itemTitle, borr
   return await sendEmail({ to: ownerEmail, subject, html });
 };
 
-/**
- * 🎉 Template 2: Notify Borrower that their Request was APPROVED
+/*
+ Template 2: Notify Borrower that their Request was APPROVED
  */
 export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, itemTitle, totalPrice, ownerEmail) => {
   const subject = `🎉 Booking Confirmed: Your ${itemTitle} is ready!`;
@@ -99,8 +97,8 @@ export const sendBookingConfirmedEmail = async (borrowerEmail, borrowerName, ite
   return await sendEmail({ to: borrowerEmail, subject, html });
 };
 
-/**
- * ❌ Template 3: Notify Borrower/Owner that a Booking was CANCELLED/REJECTED
+/*
+ Template 3: Notify Borrower/Owner that a Booking was CANCELLED/REJECTED
  */
 export const sendBookingCancelledEmail = async (recipientEmail, recipientName, itemTitle, roleContext) => {
   const subject = `⚠️ Booking Update: Rental Request Cancelled`;
@@ -125,4 +123,27 @@ export const sendBookingCancelledEmail = async (recipientEmail, recipientName, i
   `;
 
   return await sendEmail({ to: recipientEmail, subject, html });
+}
+/**
+ * 🔔 Template 4: Missed Search Demand Alert (Pings nearby owners when an item is missing)
+ */
+export const sendMissedSearchAlertEmail = async (ownerEmail, ownerName, searchQuery, location) => {
+  const subject = `🔔 High Demand Alert: Someone nearby is looking for "${searchQuery}"!`;
+  const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 12px;">
+      <h2 style="color: #6366f1;">High Demand Alert on RentalHub 🚀</h2>
+      <p>Hi <strong>${ownerName}</strong>,</p>
+      <p>A user in <strong>${location}</strong> just searched for <strong>"${searchQuery}"</strong>, but no one has it listed yet!</p>
+      <p>Since you lend out items in this category or area, we wanted to let you know. If you own this accessory or equipment, list it now to fulfill the request and start earning!</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${baseUrl}/add-rental" style="background-color: #6366f1; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 8px;">List Item Now</a>
+      </div>
+      <p style="font-size: 0.85rem; color: #777;">Happy Renting,<br>The RentalHub Team</p>
+    </div>
+  `;
+
+  return await sendEmail({ to: ownerEmail, subject, html });
 };
+;

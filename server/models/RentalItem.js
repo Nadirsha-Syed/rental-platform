@@ -40,8 +40,6 @@ const rentalItemSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-// 🔥 THE ADDITION: Create a Compound Text Index for optimized matching
-// This operates strictly behind the scenes in MongoDB without changing document schemas.
 rentalItemSchema.index(
   { 
     title: "text", 
@@ -50,14 +48,13 @@ rentalItemSchema.index(
   }, 
   {
     weights: {
-      title: 10,       // Matches found in the Title carry the highest priority match score
-      location: 5,     // Regional matching queries get secondary relevance scoring
-      description: 2   // Fallback keyword descriptions carry normal priority weighting
+      title: 10,    
+      location: 5,   
+      description: 2  
     },
-    name: "MarketplaceSearchIndex" // Internal registration tag identifier for Atlas
+    name: "MarketplaceSearchIndex"
   }
 );
 
-// ✅ ES Module Export
 const RentalItem = mongoose.model("RentalItem", rentalItemSchema);
 export default RentalItem;

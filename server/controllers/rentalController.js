@@ -1,8 +1,14 @@
 import RentalItem from "../models/RentalItem.js";
+import { sendMissedSearchAlertEmail } from "../utils/sendEmail.js";
+import MissedSearch from "../models/MissedSearch.js";
+import SearchNotification from "../models/SearchNotification.js";
+
+const escapeRegex = (text) => {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
 
 console.log("Rental Controller Loaded");
 
-// ✅ 1. Named Export explicitly matching your routes mapping requirement
 export const createRentalItem = async (req, res) => {
   try {
     const { title, category, description, pricePerHour, location, image } = req.body;
@@ -19,40 +25,197 @@ export const createRentalItem = async (req, res) => {
       location,
       owner: req.user._id || req.user.id,
       image,
-    });
+    }
+  );
+  res.status(201).json(rental);
+  (async () =>{
+    try{
+      const keywords=rental.title.toLowerCase().split(/\s+/).filter((word)=>word.length>2).map((word)=>escapeRegex(word));
+      const categoryRegex=escapeRegex(rental.category.toLowerCase());
 
-    res.status(201).json(rental);
+      const searchConditions=keywords.map((keyword)=>({
+        searchQuery: { $regex: keyword, $options: "i" }
+      }));
+
+      searchConditions.push({ 
+        searchQuery: { $regex: categoryRegex, $options: "i" }
+      });
+
+      const queryFilter = {
+         $or: searchConditions ,
+        $or: [{ isFulfilled: false }, { isFulfilled: { $exists: false } }],
+        };
+
+      if(rental.location && rental.location.trim() !== "All"){
+        queryFilter.location = {
+          $in : [new RegExp(`^${escapeRegex(rental.location)}$`, "i"),"All"],
+        };
+      }
+
+      const matchedDemands=await MissedSearch.find(queryFilter);
+
+      if(matchedDemands.length>0){
+        const totalMissedCount=matchedDemands.reduce((acc,doc)=>acc+(doc.searchCount || 1),0);
+        console.log(`New item ${rental.title} fullfills ${totalMissedCount} missed search demands`);
+
+        const matchedIds=matchedDemands.map((doc)=>doc._id);
+        await MissedSearch.updateMany(
+          {_id:{$in:matchedIds}},
+        {
+          $set : {
+            isFulfilled:true,
+            fulfilledAt:new Date(),
+            fulfilledBy:rental._id,
+          }
+        });
+      }
+      }catch(err){
+        console.error("Demand match resolution error :",err.message);
+  }})();
   } catch (error) {
     console.error("CREATE RENTAL ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// ✅ 2. Named Export for getRentalItems
+
+
 export const getRentalItems = async (req, res) => {
   try {
     const { search, category, location } = req.query;
     let filter = {};
 
-    if (search && search.trim() !== "") {
+    const cleanSearch = search ? search.trim() : "";
+    const escapedSearch = escapeRegex(cleanSearch);
+
+    if (cleanSearch !== "") {
       filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } }
+        { title: { $regex: escapedSearch, $options: "i" } },
+        { description: { $regex: escapedSearch, $options: "i" } },
+        { category: { $regex: escapedSearch, $options: "i" } },
       ];
     }
 
     if (category && category !== "All") {
-      filter.category = { $regex: `^${category}`, $options: "i" };
+      filter.category = { $regex: `^${escapeRegex(category)}`, $options: "i" };
     }
 
     if (location && location !== "All") {
-      filter.location = { $regex: `^${location}$`, $options: "i" };
+      filter.location = { $regex: `^${escapeRegex(location)}$`, $options: "i" };
     }
 
     const rentals = await RentalItem.find(filter)
       .populate("owner", "name email")
       .sort({ createdAt: -1 });
+
+    if (rentals.length === 0 && cleanSearch !== "") {
+      (async () => {
+        try {
+          const lowerQuery = cleanSearch.toLowerCase();
+          const targetLocation = location || "All";
+
+          // 1. Atomic Upsert: Prevents race conditions across concurrent searches
+          await MissedSearch.findOneAndUpdate(
+            { searchQuery: lowerQuery, location: targetLocation },
+            { $inc: { searchCount: 1 } },
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+          );
+
+          // 2. Tokenized Keyword Match (e.g. "Sony Alpha A7" -> ["sony", "alpha", "a7"])
+          const keywords = cleanSearch
+            .toLowerCase()
+            .split(/\s+/)
+            .filter((word) => word.length > 2)
+            .map(escapeRegex);
+
+          let relatedFilter = {};
+          if (keywords.length > 0) {
+            relatedFilter.$or = keywords.flatMap((kw) => [
+              { title: { $regex: kw, $options: "i" } },
+              { category: { $regex: kw, $options: "i" } },
+            ]);
+          }
+
+          if (targetLocation !== "All") {
+            relatedFilter.location = { $regex: `^${escapeRegex(targetLocation)}$`, $options: "i" };
+          }
+
+          let relevantItems = await RentalItem.find(relatedFilter).populate("owner", "name email");
+
+          if (relevantItems.length === 0) {
+            const fallbackFilter = {};
+            if (category && category !== "All") {
+              fallbackFilter.category = { $regex: `^${escapeRegex(category)}`, $options: "i" };
+            }
+            if (targetLocation !== "All") {
+              fallbackFilter.location = { $regex: `^${escapeRegex(targetLocation)}$`, $options: "i" };
+            }
+
+            if (Object.keys(fallbackFilter).length > 0) {
+              relevantItems = await RentalItem.find(fallbackFilter).populate("owner", "name email");
+            }
+          }
+
+          const ownerMap = new Map();
+          relevantItems.forEach((item) => {
+            if (item.owner && item.owner.email) {
+              ownerMap.set(item.owner._id.toString(), item.owner);
+            }
+          });
+
+          const candidateOwners = Array.from(ownerMap.values());
+          if (candidateOwners.length === 0) return;
+
+          const TWENTY_FOUR_HOURS_AGO = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+          const recentNotifications = await SearchNotification.find({
+            owner: { $in: candidateOwners.map((o) => o._id) },
+            searchQuery: lowerQuery,
+            location: targetLocation,
+            notifiedAt: { $gte: TWENTY_FOUR_HOURS_AGO },
+          });
+
+          const recentlyNotifiedOwnerIds = new Set(
+            recentNotifications.map((n) => n.owner.toString())
+          );
+
+          const ownersToAlert = candidateOwners
+            .filter((owner) => !recentlyNotifiedOwnerIds.has(owner._id.toString()))
+            .slice(0, 5);
+
+          if (ownersToAlert.length > 0) {
+            const emailPromises = ownersToAlert.map((owner) =>
+              sendMissedSearchAlertEmail(
+                owner.email,
+                owner.name,
+                cleanSearch,
+                targetLocation !== "All" ? targetLocation : "your area"
+              )
+            );
+
+            const results = await Promise.allSettled(emailPromises);
+
+            const newNotificationLogs = [];
+            ownersToAlert.forEach((owner, index) => {
+              if (results[index].status === "fulfilled") {
+                newNotificationLogs.push({
+                  owner: owner._id,
+                  searchQuery: lowerQuery,
+                  location: targetLocation,
+                  notifiedAt: new Date(),
+                });
+              }
+            });
+
+            if (newNotificationLogs.length > 0) {
+              await SearchNotification.insertMany(newNotificationLogs);
+            }
+          }
+        } catch (bgErr) {
+          console.error("⚠️ Missed Search Background Engine Error:", bgErr.message);
+        }
+      })();
+    }
 
     res.json(rentals);
   } catch (error) {
@@ -61,7 +224,6 @@ export const getRentalItems = async (req, res) => {
   }
 };
 
-// ✅ 3. Named Export for getMyRentals
 export const getMyRentals = async (req, res) => {
   try {
     const currentUserId = req.user?._id || req.user?.id;
@@ -76,7 +238,6 @@ export const getMyRentals = async (req, res) => {
   }
 };
 
-// ✅ 4. Named Export for getRentalById
 export const getRentalById = async (req, res) => {
   try {
     const rental = await RentalItem.findById(req.params.id).populate("owner", "name email");
@@ -92,7 +253,6 @@ export const getRentalById = async (req, res) => {
   }
 };
 
-// ✅ 5. Named Export for updateRentalItem
 export const updateRentalItem = async (req, res) => {
   try {
     const rental = await RentalItem.findById(req.params.id);
@@ -123,7 +283,6 @@ export const updateRentalItem = async (req, res) => {
   }
 };
 
-// ✅ 6. Named Export for deleteRentalItem
 export const deleteRentalItem = async (req, res) => {
   try {
     const rental = await RentalItem.findById(req.params.id);
