@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import MyRentals from "./pages/MyRentals";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import Profile from "./pages/Profile";
+import Chat from "./pages/Chat";
 
 // 🔥 New Production Architecture Additions
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -32,6 +33,7 @@ function App() {
             <Route path="/my-rentals" element={<MyRentals />} />
             <Route path="/owner-dashboard" element={<OwnerDashboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/chat" element={<Chat />} />
           </Route>
         </Routes>
       </AuthProvider>

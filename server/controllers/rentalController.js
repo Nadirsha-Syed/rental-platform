@@ -117,14 +117,12 @@ export const getRentalItems = async (req, res) => {
           const lowerQuery = cleanSearch.toLowerCase();
           const targetLocation = location || "All";
 
-          // 1. Atomic Upsert: Prevents race conditions across concurrent searches
           await MissedSearch.findOneAndUpdate(
             { searchQuery: lowerQuery, location: targetLocation },
             { $inc: { searchCount: 1 } },
             { upsert: true, new: true, setDefaultsOnInsert: true }
           );
 
-          // 2. Tokenized Keyword Match (e.g. "Sony Alpha A7" -> ["sony", "alpha", "a7"])
           const keywords = cleanSearch
             .toLowerCase()
             .split(/\s+/)
@@ -190,7 +188,7 @@ export const getRentalItems = async (req, res) => {
 
           const ownersToAlert = candidateOwners
             .filter((owner) => !recentlyNotifiedOwnerIds.has(owner._id.toString()))
-            .slice(0, 5);
+            .slice(0, 20);
 
           if (ownersToAlert.length > 0) {
             const emailPromises = ownersToAlert.map((owner) =>
@@ -206,13 +204,15 @@ export const getRentalItems = async (req, res) => {
 
             const newNotificationLogs = [];
             ownersToAlert.forEach((owner, index) => {
-              if (results[index].status === "fulfilled") {
-                newNotificationLogs.push({
-                  owner: owner._id,
-                  searchQuery: lowerQuery,
-                  location: targetLocation,
-                  notifiedAt: new Date(),
-                });
+              newNotificationLogs.push({
+                owner: owner._id,
+                searchQuery: lowerQuery,
+                location: targetLocation,
+                notifiedAt: new Date(),
+              });
+
+              if (results[index].status === "rejected") {
+                console.warn(`📧 Email delivery failed for owner ${owner.email}:`, results[index].reason?.message || results[index].reason);
               }
             });
 

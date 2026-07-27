@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Bell, Search, CheckCircle } from "lucide-react";
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
@@ -16,7 +17,7 @@ const NotificationBell = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("http://localhost:5000/api/notifications", {
+      const res = await axios.get(`${API_BASE_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -29,7 +30,6 @@ const NotificationBell = () => {
 
   return (
     <div className="relative">
-      {/* Bell Icon Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:text-indigo-600 hover:bg-gray-100 rounded-full transition-colors"
@@ -42,7 +42,6 @@ const NotificationBell = () => {
         )}
       </button>
 
-      {/* Slide-out Notification Panel */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
           <div className="p-4 bg-indigo-600 text-white flex justify-between items-center">

@@ -111,3 +111,18 @@
   color: #2563eb;
   text-decoration: none;
 }
+
+.authCard h2 {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.subtitle {
+  text-align: center;
+  margin-bottom: 20px;
+  color: gray;
+  font-size: 14px;
+}

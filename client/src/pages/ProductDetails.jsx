@@ -1,20 +1,23 @@
 import Navbar from "../components/Navbar";
 import "./ProductDetails.css";
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import API_BASE_URL from "../config/api"; // Adjust path to config/api.js
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import API_BASE_URL from "../config/api";
 
 export default function ProductDetails() {
   const { productId } = useParams();
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [product, setProduct] = useState(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [estimatedPrice, setEstimatedPrice] = useState(0);
-  const [loadingBooking, setLoadingBooking] = useState(false); // 🔥 Added to track submission states
+  const [loadingBooking, setLoadingBooking] = useState(false);
+  const [loadingChat, setLoadingChat] = useState(false);
 
   // Fetch product
   useEffect(() => {
-    // 🔥 MODIFIED: Swapped hardcoded URL for your central configuration pointer variable
     fetch(`${API_BASE_URL}/api/rentals/${productId}`)
       .then((res) => res.json())
       .then((data) => setProduct(data));
@@ -44,12 +47,10 @@ export default function ProductDetails() {
       return;
     }
 
-    // 🔒 THE FIX: Prevent execution if a request is already processing
     if (loadingBooking) return; 
     setLoadingBooking(true); 
 
     try {
-      // 🔥 MODIFIED: Swapped hardcoded URL for your central configuration pointer variable
       const res = await fetch(`${API_BASE_URL}/api/bookings`, {
         method: "POST",
         headers: {
@@ -66,7 +67,6 @@ export default function ProductDetails() {
 
       const data = await res.json();
       if (res.ok) {
-        // Updated text alert to properly fit the P2P approval update style
         alert("Booking Request Sent Successfully! 🚀 Awaiting owner approval.");
       } else {
         console.error("Server Error Detail:", data);
@@ -76,7 +76,50 @@ export default function ProductDetails() {
       console.error(err);
       alert("Server error, please try again");
     } finally {
-      setLoadingBooking(false); // 🔓 Unfreeze the button once the process resolves
+      setLoadingBooking(false);
+    }
+  };
+
+  const handleChat = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login to chat with the owner");
+      navigate("/login");
+      return;
+    }
+
+    if (!product?.owner?._id) {
+      alert("Owner details not found");
+      return;
+    }
+
+    if (loadingChat) return;
+    setLoadingChat(true);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/chat/rooms`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          participantId: product.owner._id,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        navigate(`/chat?room=${data._id}`);
+      } else {
+        alert(data.message || "Failed to initiate chat");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error, please try again");
+    } finally {
+      setLoadingChat(false);
     }
   };
 
@@ -88,12 +131,10 @@ export default function ProductDetails() {
       <div className="productDetailsPage">
         <div className="productContainer">
           
-          {/* 🖼️ Image Section */}
           <div className="imageSection">
             <img src={product.image} alt={product.title} />
           </div>
 
-          {/* 📝 Info Section */}
           <div className="infoSection">
             <h1>{product.title}</h1>
             <p className="location">📍 {product.location || "No location"}</p>
@@ -116,7 +157,6 @@ export default function ProductDetails() {
                 <span className="totalAmount">₹{estimatedPrice}</span>
               </div>
 
-              {/* 🚫 Disabled attribute dynamically binds to state to prevent clicking spam */}
               <button 
                 className="bookBtn" 
                 onClick={handleBooking}
@@ -125,6 +165,16 @@ export default function ProductDetails() {
               >
                 {loadingBooking ? "Sending Request..." : "Book Now"}
               </button>
+
+              {(!user || (user._id || user.id) !== product.owner?._id) && (
+                <button
+                  className="chatBtn"
+                  onClick={handleChat}
+                  disabled={loadingChat}
+                >
+                  {loadingChat ? "Initiating Chat..." : "Chat with Owner"}
+                </button>
+              )}
             </div>
           </div>
 

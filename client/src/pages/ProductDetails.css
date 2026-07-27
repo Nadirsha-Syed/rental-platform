@@ -184,3 +184,26 @@
     top: 100px;
   }
 }
+
+.chatBtn {
+  background: transparent;
+  color: rgb(var(--color-primary));
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: 2px solid rgb(var(--color-primary));
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  margin-top: 8px;
+}
+
+.chatBtn:hover:not(:disabled) {
+  background: rgba(var(--color-primary) / 0.1);
+  transform: translateY(-1px);
+}
+
+.chatBtn:active:not(:disabled) {
+  transform: translateY(0);
+}

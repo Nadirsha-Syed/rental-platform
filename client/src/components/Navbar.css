@@ -252,4 +252,18 @@
   }
 }
 
+.chatLink {
+  color: rgb(var(--text-main));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0.85;
+  text-decoration: none;
+}
 
+.chatLink:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
