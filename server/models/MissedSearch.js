@@ -22,6 +22,17 @@ const missedSearchSchema = new mongoose.Schema(
         notifiedAt: { type: Date, default: Date.now },
       },
     ],
+    isFulfilled: {
+      type: Boolean,
+      default: false,
+    },
+    fulfilledAt: {
+      type: Date,
+    },
+    fulfilledBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RentalItem",
+    },
   },
   { timestamps: true }
 );

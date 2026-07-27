@@ -1,13 +1,11 @@
 import Booking from "../models/Booking.js";
 import RentalItem from "../models/RentalItem.js";
-// 🔥 Import the mailing utility templates
 import { 
   sendNewBookingEmail, 
   sendBookingConfirmedEmail, 
   sendBookingCancelledEmail 
 } from "../utils/sendEmail.js";
 
-// ✅ 1. Create Booking (With Pending & Confirmed conflict protection - NON-BLOCKING EMAIL)
 export const createBooking = async (req, res) => {
   try {
     console.log("BODY:", req.body);
@@ -15,12 +13,10 @@ export const createBooking = async (req, res) => {
 
     const { rentalItemId, startTime, endTime } = req.body;
 
-    // Validation
     if (!rentalItemId || !startTime || !endTime) {
       return res.status(400).json({ message: "Missing booking data" });
     }
 
-    // Populate the item owner details so we have their email address!
     const item = await RentalItem.findById(rentalItemId).populate("owner", "name email");
     if (!item) {
       return res.status(404).json({ message: "Rental item not found" });
@@ -34,7 +30,6 @@ export const createBooking = async (req, res) => {
       return res.status(400).json({ message: "Invalid time range" });
     }
 
-    // 🕒 TIME CONFLICT CHECK (Checks against both confirmed and pending bookings)
     const conflictingBooking = await Booking.findOne({
       rentalItem: rentalItemId,
       status: { $in: ["confirmed", "pending"] }, 
@@ -50,7 +45,6 @@ export const createBooking = async (req, res) => {
       });
     }
 
-    // Calculate total
     const totalPrice = Math.round(hours * item.pricePerHour);
 
     // Create the booking
@@ -65,10 +59,8 @@ export const createBooking = async (req, res) => {
 
     console.log("BOOKING CREATED (PENDING APPROVAL):", booking);
     
-    // 🔥 OPTIMIZATION: Send the success response immediately to the frontend!
     res.status(201).json(booking);
 
-    // 🔥 Run email out-of-band in the background without holding up the user response
     sendNewBookingEmail(
       item.owner.email,
       item.owner.name,
@@ -85,11 +77,9 @@ export const createBooking = async (req, res) => {
   }
 };
 
-// ✅ 2. Get My Bookings (Borrower Perspective - Deeply Populated for UI Tracking)
-// ✅ 2. Get My Bookings (Borrower Perspective - Fallback Safe ID Assignment)
+// get bookings borrower perspective
 export const getMyBookings = async (req, res) => {
   try {
-    // 🔍 Fallback validation check: tries _id first, defaults to .id if missing
     const currentUserId = req.user?._id || req.user?.id;
 
     if (!currentUserId) {
@@ -118,7 +108,7 @@ export const getMyBookings = async (req, res) => {
   }
 };
 
-// ✅ 3. Get Bookings for My Rentals (Lender Perspective)
+// Get Bookings Lender Perspective
 export const getBookingsForMyRentals = async (req, res) => {
   try {
     const myRentals = await RentalItem.find({ owner: req.user._id });
@@ -141,7 +131,7 @@ export const getBookingsForMyRentals = async (req, res) => {
   }
 };
 
-// ✅ 4. Get Owner Revenue (Strictly confirmed counts)
+// Get Owner Revenue (Strictly confirmed counts)
 export const getOwnerRevenue = async (req, res) => {
   try {
     const myRentals = await RentalItem.find({ owner: req.user._id });
@@ -180,7 +170,7 @@ export const getOwnerRevenue = async (req, res) => {
   }
 };
 
-// ✅ 5. Cancel/Reject Booking (NON-BLOCKING EMAIL)
+// Cancel/Reject Booking (NON-BLOCKING EMAIL)
 export const cancelBooking = async (req, res) => {
   try {
     const bookingId = req.params.id.trim();
@@ -207,10 +197,8 @@ export const cancelBooking = async (req, res) => {
     booking.status = "cancelled";
     await booking.save();
 
-    // 🔥 OPTIMIZATION: Return data back to client immediately
     res.json({ message: "Booking cancelled successfully", booking });
 
-    // 🔥 Run cancellation alert emails out-of-band in the background
     if (isOwner) {
       // Owner rejected it -> alert borrower
       sendBookingCancelledEmail(booking.user.email, booking.user.name, itemWithOwner.title, "borrower")
@@ -229,7 +217,7 @@ export const cancelBooking = async (req, res) => {
   }
 };
 
-// ✅ 6. Confirm Booking (Owner Direct Action - NON-BLOCKING EMAIL)
+// Confirm Booking (Owner Direct Action - NON-BLOCKING EMAIL)
 export const confirmBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id).populate("rentalItem").populate("user", "name email");
@@ -255,20 +243,18 @@ export const confirmBooking = async (req, res) => {
     booking.status = "confirmed";
     await booking.save();
 
-    // 🔥 OPTIMIZATION: Return success response to the client immediately
     res.json({
       success: true,
       message: "Booking confirmed successfully",
       data: booking,
     });
 
-    // 🔥 Run confirmation email out-of-band in background task loop
     sendBookingConfirmedEmail(
       booking.user.email,
       booking.user.name,
       booking.rentalItem.title,
       booking.totalPrice,
-      req.user.email // Lender email address string
+      req.user.email 
     ).catch((mailErr) => console.error("⚠️ Background Mail Error (Confirm Booking):", mailErr.message));
 
   } catch (error) {

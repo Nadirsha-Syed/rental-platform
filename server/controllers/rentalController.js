@@ -2,6 +2,7 @@ import RentalItem from "../models/RentalItem.js";
 import { sendMissedSearchAlertEmail } from "../utils/sendEmail.js";
 import MissedSearch from "../models/MissedSearch.js";
 import SearchNotification from "../models/SearchNotification.js";
+import User from "../models/User.js";
 
 const escapeRegex = (text) => {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -42,9 +43,11 @@ export const createRentalItem = async (req, res) => {
       });
 
       const queryFilter = {
-         $or: searchConditions ,
-        $or: [{ isFulfilled: false }, { isFulfilled: { $exists: false } }],
-        };
+        $and: [
+          { $or: searchConditions },
+          { $or: [{ isFulfilled: false }, { isFulfilled: { $exists: false } }] }
+        ]
+      };
 
       if(rental.location && rental.location.trim() !== "All"){
         queryFilter.location = {
@@ -163,7 +166,13 @@ export const getRentalItems = async (req, res) => {
             }
           });
 
-          const candidateOwners = Array.from(ownerMap.values());
+          let candidateOwners = Array.from(ownerMap.values());
+
+          if(candidateOwners.length === 0) {
+            const currentUserId = req.user?._id || req.user?.id;
+            candidateOwners=await User.find({_id:{$ne:currentUserId}}).select("name email");
+          }
+
           if (candidateOwners.length === 0) return;
 
           const TWENTY_FOUR_HOURS_AGO = new Date(Date.now() - 24 * 60 * 60 * 1000);
