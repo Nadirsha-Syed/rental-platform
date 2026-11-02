@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import API_BASE_URL from "../config/api"; 
 import { ThemeContext } from "../context/ThemeContext"; 
-import { AuthContext } from "../context/AuthContext"; // 🔌 Import AuthContext to know who is logged in
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext to know who is logged in
 
 export default function ProductsPage() {
   const [rentals, setRentals] = useState([]);
@@ -12,16 +12,16 @@ export default function ProductsPage() {
   const [error, setError] = useState("");
   
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(AuthContext); // ⭐ Get the logged-in user information
+  const { user } = useContext(AuthContext); // Get the logged-in user information
 
-  // 🧭 Hook to extract live URL parameters
+  // Hook to extract live URL parameters
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchQuery = searchParams.get("search") || "";
   const categoryQuery = searchParams.get("category") || "All";
   const locationQuery = searchParams.get("location") || "All";
 
-  // 🔥 Fetch function
+  // Fetch function
   const fetchRentals = async () => {
     try {
       setLoading(true);
@@ -41,12 +41,12 @@ export default function ProductsPage() {
     }
   };
 
-  // 🔄 Re-run fetch whenever any query parameters change
+  // Re-run fetch whenever any query parameters change
   useEffect(() => {
     fetchRentals();
   }, [searchQuery, categoryQuery, locationQuery]);
 
-  // 🎛️ Inline UI filter state handlers
+  // Inline UI filter state handlers
   const handleFilterChange = (key, value) => {
     const currentParams = Object.fromEntries([...searchParams]);
     
@@ -59,7 +59,7 @@ export default function ProductsPage() {
     setSearchParams(currentParams);
   };
 
-  // 🛑 FILTER LOGIC: Exclude listings owned by the logged-in user
+  // FILTER LOGIC: Exclude listings owned by the logged-in user
   const visibleRentals = rentals.filter((item) => {
     const itemOwnerId = item.owner?._id || item.owner;
     const currentUserId = user?._id || user?.id;
@@ -79,7 +79,7 @@ export default function ProductsPage() {
         <div className="products-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginBottom: "20px" }}>
           <h2 className="title" style={{ margin: 0 }}>Available Rentals</h2>
           
-          {/* 📍 Dropdown Filters Layout */}
+          {/* Dropdown Filters Layout */}
           <div className="filters-container" style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
             
             <select 
@@ -108,21 +108,21 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        {/* 🔄 Loading */}
+        {/* Loading */}
         {loading && <p>Loading rentals...</p>}
 
-        {/* ❌ Error */}
+        {/* Error */}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* 📦 Empty State (Checked against visibleRentals instead of raw rentals) */}
+        {/* Empty State (Checked against visibleRentals instead of raw rentals) */}
         {!loading && visibleRentals.length === 0 && (
           <p className="empty-message" style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
             No rentals match your search criteria. Try adjusting your filters!
           </p>
         )}
 
-        {/* 🧾 Products Grid */}
-        {/* ✅ FIXED: Changed column layout tracks from minmax 1fr to a static 260px boundary */}
+        {/* Products Grid */}
+        {/* FIXED: Changed column layout tracks from minmax 1fr to a static 260px boundary */}
         <div 
           className="grid"
           style={{

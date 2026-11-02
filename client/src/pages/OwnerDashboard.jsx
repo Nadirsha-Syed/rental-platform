@@ -2,10 +2,10 @@ import { useEffect, useState, useContext } from "react";
 import Navbar from "../components/Navbar";
 import "./OwnerDashboard.css";
 import API_BASE_URL from "../config/api"; 
-import { AuthContext } from "../context/AuthContext"; // 🔌 Import AuthContext to read dynamic wallet states
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext to read dynamic wallet states
 
 export default function OwnerDashboard() {
-  const { user } = useContext(AuthContext); // 💰 Extract user session object
+  const { user } = useContext(AuthContext); // Extract user session object
   
   // Initialize state with a safe object structure instead of null to prevent runtime layout errors
   const [stats, setStats] = useState({ totalRevenue: 0, totalBookings: 0, activeBookings: 0 });
@@ -13,7 +13,7 @@ export default function OwnerDashboard() {
   const [loading, setLoading] = useState(true);
   const [withdrawalHandle, setWithdrawalHandle] = useState(""); // State to hold input handle
 
-  // 🔄 Fetch dashboard data using centralized environment mapping
+  // Fetch dashboard data using centralized environment mapping
   const fetchDashboardData = async () => {
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
@@ -43,7 +43,7 @@ export default function OwnerDashboard() {
     fetchDashboardData();
   }, []);
 
-  // 🟢 Handle Booking Approval
+  // Handle Booking Approval
   const handleConfirm = async (bookingId) => {
     const token = localStorage.getItem("token") || JSON.parse(localStorage.getItem("user"))?.token;
     try {
@@ -53,8 +53,8 @@ export default function OwnerDashboard() {
       });
 
       if (res.ok) {
-        alert("Booking Confirmed! Lender wallet credited successfully. 🟢");
-        fetchDashboardData(); // 🔄 Instantly refresh stats and list
+        alert("Booking Confirmed! Lender wallet credited successfully.");
+        fetchDashboardData(); // Instantly refresh stats and list
       } else {
         const data = await res.json();
         alert(data.message || "Failed to confirm booking");
@@ -64,7 +64,7 @@ export default function OwnerDashboard() {
     }
   };
 
-  // 🔴 Handle Booking Rejection
+  // Handle Booking Rejection
   const handleCancel = async (bookingId) => {
     if (!window.confirm("Are you sure you want to reject this booking request?")) return;
 
@@ -76,8 +76,8 @@ export default function OwnerDashboard() {
       });
 
       if (res.ok) {
-        alert("Booking Rejected and balance adjusted 🔴");
-        fetchDashboardData(); // 🔄 Instantly refresh stats and list
+        alert("Booking Rejected and balance adjusted.");
+        fetchDashboardData(); // Instantly refresh stats and list
       } else {
         const data = await res.json();
         alert(data.message || "Failed to reject booking");
@@ -107,7 +107,7 @@ export default function OwnerDashboard() {
           <p className="dashboard-subtitle">Manage your rentals and track your earnings.</p>
         </header>
 
-        {/* 💰 VIRTUAL EARNINGS WALLET DISPLAY CARD */}
+        {/* VIRTUAL EARNINGS WALLET DISPLAY CARD */}
         <div className="wallet-card">
           <span className="wallet-label">
             Withdrawable Wallet Ledger Balance
@@ -133,7 +133,7 @@ export default function OwnerDashboard() {
           </div>
         </div>
 
-        {/* 📊 Earnings Overview */}
+        {/* Earnings Overview */}
         <section className="stats-grid">
           <div className="stat-card revenue-card">
             <span className="stat-label">Total Revenue</span>
@@ -149,7 +149,7 @@ export default function OwnerDashboard() {
           </div>
         </section>
 
-        {/* 📋 Incoming Bookings List */}
+        {/* Incoming Bookings List */}
         <section className="bookings-section">
           <div className="section-header">
             <h3 className="section-title">Recent Inbound Bookings</h3>

@@ -140,7 +140,7 @@
   align-items: center;
   gap: 12px; /* Adds space between all buttons */
 }
-/* 👤 PROFILE AVATAR CIRCLE */
+/* PROFILE AVATAR CIRCLE */
 .profileAvatar {
   width: 38px;
   height: 38px;
@@ -165,7 +165,7 @@
   box-shadow: 0 0 10px rgba(var(--color-primary), 0.4);
 }
 
-/* 🔥 RESPONSIVE MOBILE STRATEGY */
+/* RESPONSIVE MOBILE STRATEGY */
 @media (max-width: 768px) {
   .navInner {
     padding: 10px 12px !important;

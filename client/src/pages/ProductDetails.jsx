@@ -1,3 +1,4 @@
+import { MapPin } from "lucide-react";
 import Navbar from "../components/Navbar";
 import "./ProductDetails.css";
 import { useParams, useNavigate } from "react-router-dom";
@@ -67,7 +68,7 @@ export default function ProductDetails() {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Booking Request Sent Successfully! 🚀 Awaiting owner approval.");
+        alert("Booking Request Sent Successfully! Awaiting owner approval.");
       } else {
         console.error("Server Error Detail:", data);
         alert(data.message || "Booking failed");
@@ -137,19 +138,29 @@ export default function ProductDetails() {
 
           <div className="infoSection">
             <h1>{product.title}</h1>
-            <p className="location">📍 {product.location || "No location"}</p>
+            <p className="location"><MapPin size={16} /> <span>{product.location || "No location"}</span></p>
             <p className="priceTag">₹{product.pricePerHour}<span>/hr</span></p>
             <p className="description">{product.description}</p>
 
             <div className="bookingBox">
               <div className="inputGroup">
-                <label>Start Time</label>
-                <input type="datetime-local" onChange={(e) => setStartTime(e.target.value)} />
+                <label htmlFor="startTime">Start Time</label>
+                <input 
+                  id="startTime"
+                  type="datetime-local" 
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)} 
+                />
               </div>
 
               <div className="inputGroup">
-                <label>End Time</label>
-                <input type="datetime-local" onChange={(e) => setEndTime(e.target.value)} />
+                <label htmlFor="endTime">End Time</label>
+                <input 
+                  id="endTime"
+                  type="datetime-local" 
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)} 
+                />
               </div>
 
               <div className="priceSummary">

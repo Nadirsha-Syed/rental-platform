@@ -12,7 +12,7 @@
   margin-top: 20px;
 }
 
-/* 🖼️ IMAGE SECTION */
+/* IMAGE SECTION */
 .imageSection {
   width: 100% !important;
   height: 300px !important; 
@@ -29,7 +29,7 @@
   display: block;
 }
 
-/* 📝 INFO SECTION */
+/* INFO SECTION */
 .infoSection {
   flex: 1;
   display: flex;
@@ -47,6 +47,9 @@
 .location {
   color: rgb(var(--text-muted));
   font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .priceTag {
@@ -61,7 +64,7 @@
   color: rgb(var(--text-muted));
 }
 
-/* 💳 BOOKING CARD */
+/* BOOKING CARD */
 .bookingBox {
   background: rgb(var(--surface));
   border: 1px solid rgba(var(--glass-border) / 0.4);
@@ -87,47 +90,84 @@
   color: rgb(var(--text-muted));
 }
 
-/* 🕒 CLICK-ANYWHERE INPUT FIX */
-.bookingBox input {
-  padding: 14px;
+/* START & END TIME INPUTS */
+.bookingBox input,
+.bookingBox input[type="datetime-local"] {
+  width: 100%;
+  padding: 12px 14px;
   border-radius: 10px;
-  border: 1.5px solid rgba(var(--glass-border) / 0.6);
-  background: rgba(var(--surface) / 0.5);
+  border: 1.5px solid #cbd5e1;
+  background-color: #ffffff;
   color: rgb(var(--text-main));
   font-size: 15px;
-  width: 100%;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
   cursor: pointer;
-  position: relative;
-  display: flex;
-  align-items: center;
-  appearance: none;
-  -webkit-appearance: none;
+  color-scheme: light;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-/* 🔥 The "Secret Sauce": Stretch the picker indicator to fill the whole box */
-.bookingBox input::-webkit-calendar-picker-indicator {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  opacity: 0; /* Hide the native icon because it's now stretched and ugly */
+.bookingBox input:hover:not(:disabled),
+.bookingBox input[type="datetime-local"]:hover:not(:disabled) {
+  border-color: #94a3b8;
 }
 
-/* Add a clean custom calendar icon back since we hid the native one */
-.inputGroup::after {
-  content: '📅';
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-  font-size: 14px;
-  pointer-events: none; /* Clicks pass through to the input below */
-  opacity: 0.6;
+.bookingBox input:focus,
+.bookingBox input[type="datetime-local"]:focus {
+  border-color: rgb(var(--color-primary));
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.bookingBox input:disabled,
+.bookingBox input[type="datetime-local"]:disabled {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Native Calendar/Time Picker Indicator */
+.bookingBox input::-webkit-calendar-picker-indicator,
+.bookingBox input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 2px 4px;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.bookingBox input::-webkit-calendar-picker-indicator:hover,
+.bookingBox input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Dark / Corporate Theme adaptations */
+[data-theme="corporate"] .bookingBox input,
+[data-theme="corporate"] .bookingBox input[type="datetime-local"] {
+  border: 1.5px solid #475569;
+  background-color: #1e293b;
+  color: #f1f5f9;
+  color-scheme: dark;
+}
+
+[data-theme="corporate"] .bookingBox input:hover:not(:disabled),
+[data-theme="corporate"] .bookingBox input[type="datetime-local"]:hover:not(:disabled) {
+  border-color: #64748b;
+}
+
+[data-theme="corporate"] .bookingBox input:focus,
+[data-theme="corporate"] .bookingBox input[type="datetime-local"]:focus {
+  border-color: rgb(var(--color-primary));
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+}
+
+[data-theme="corporate"] .bookingBox input:disabled,
+[data-theme="corporate"] .bookingBox input[type="datetime-local"]:disabled {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #64748b;
 }
 
 .priceSummary {
@@ -166,7 +206,7 @@
   transform: translateY(0);
 }
 
-/* 🖥️ DESKTOP FIX */
+/* DESKTOP FIX */
 @media (min-width: 850px) {
   .productContainer {
     flex-direction: row;
@@ -206,4 +246,4 @@
 
 .chatBtn:active:not(:disabled) {
   transform: translateY(0);
-}
+}

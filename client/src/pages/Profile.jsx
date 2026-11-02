@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react";
+import { User, Settings, Calendar, Package, LayoutDashboard, Plus, Pencil, Check, CheckCircle2, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AuthContext } from "../context/AuthContext";
@@ -83,7 +84,7 @@ export default function Profile() {
           {/* Header section */}
           <div className="profileHeader">
             <div className="avatarLarge">
-              {user?.name ? user.name[0].toUpperCase() : "👤"}
+              {user?.name ? user.name[0].toUpperCase() : <User size={28} />}
             </div>
             <div className="headerMeta">
               <h2>{user?.name || "User Account"}</h2>
@@ -102,22 +103,22 @@ export default function Profile() {
                 className={`navActionBtn ${activeTab === "settings" ? "activeTab" : ""}`}
                 onClick={() => setActiveTab("settings")}
               >
-                ⚙️ Settings
+                <Settings size={15} /> <span>Settings</span>
               </button>
               <button 
                 className={`navActionBtn ${activeTab === "bookings" ? "activeTab" : ""}`} 
                 onClick={() => setActiveTab("bookings")}
               >
-                🎟️ My Bookings
+                <Calendar size={15} /> <span>My Bookings</span>
               </button>
               <button className="navActionBtn" onClick={() => navigate("/my-rentals")}>
-                📂 My Rentals
+                <Package size={15} /> <span>My Rentals</span>
               </button>
               <button className="navActionBtn" onClick={() => navigate("/owner-dashboard")}>
-                📊 Owner Dashboard
+                <LayoutDashboard size={15} /> <span>Owner Dashboard</span>
               </button>
               <button className="navActionBtn addStyle" onClick={() => navigate("/add-rental")}>
-                ➕ List an Item
+                <Plus size={15} /> <span>List an Item</span>
               </button>
             </div>
           </div>
@@ -140,7 +141,7 @@ export default function Profile() {
                           className="editInlineBtn"
                           onClick={() => setIsEditingPhone(true)}
                         >
-                          ✏️ Edit
+                          <Pencil size={12} /> <span>Edit</span>
                         </button>
                       </div>
                     ) : (
@@ -172,7 +173,7 @@ export default function Profile() {
 
                   {saveSuccess && (
                     <div className="successMsg">
-                      ✓ Profile settings saved successfully!
+                      <Check size={16} /> <span>Profile settings saved successfully!</span>
                     </div>
                   )}
                 </form>
@@ -216,7 +217,7 @@ export default function Profile() {
                               </td>
                               <td>
                                 {booking.paymentStatus === "Paid" ? (
-                                  <span className="paymentIndicator paid">🟢 Paid</span>
+                                  <span className="paymentIndicator paid"><CheckCircle2 size={13} /> <span>Paid</span></span>
                                 ) : booking.status === "confirmed" ? (
                                   <button
                                     onClick={() => executeRentalPayment(calculatedPrice, itemTitle, {}, () => setActiveTab("bookings"))}
@@ -225,7 +226,7 @@ export default function Profile() {
                                     Pay ₹{calculatedPrice}
                                   </button>
                                 ) : booking.status === "cancelled" ? (
-                                  <span className="paymentIndicator cancelled">❌ Cancelled</span>
+                                  <span className="paymentIndicator cancelled"><XCircle size={13} /> <span>Cancelled</span></span>
                                 ) : (
                                   <span className="paymentIndicator pending">Awaiting Approval</span>
                                 )}

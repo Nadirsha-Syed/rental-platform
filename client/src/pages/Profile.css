@@ -196,6 +196,10 @@
   font-weight: 600;
   text-align: center;
   animation: fadeIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 /* Bookings Interactive Grid Layout */
@@ -271,6 +275,9 @@
 .paymentIndicator {
   font-size: 13px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 .paymentIndicator.paid { color: #16a34a; }
 .paymentIndicator.cancelled { color: #94a3b8; }

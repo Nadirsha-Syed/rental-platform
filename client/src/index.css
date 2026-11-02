@@ -208,7 +208,7 @@ body {
 }
 
 /* ==================================
-   🔥 FILTER SELECT DROPDOWNS (NEW)
+   FILTER SELECT DROPDOWNS (NEW)
    ================================== */
 
 .filter-select {
@@ -233,8 +233,80 @@ body {
   border-color: rgb(var(--color-primary));
 }
 
+/* ==================================
+   TIME & DATE PICKER INPUT STANDARDS
+   ================================== */
+
+input[type="time"],
+input[type="date"],
+input[type="datetime-local"] {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: rgb(var(--text-main));
+  color-scheme: light;
+  outline: none;
+  padding: 10px 14px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="time"]:hover:not(:disabled),
+input[type="date"]:hover:not(:disabled),
+input[type="datetime-local"]:hover:not(:disabled) {
+  border-color: #94a3b8;
+}
+
+input[type="time"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus {
+  border-color: rgb(var(--color-primary));
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+input[type="time"]:disabled,
+input[type="date"]:disabled,
+input[type="datetime-local"]:disabled {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Dark theme time/date inputs */
+[data-theme="corporate"] input[type="time"],
+[data-theme="corporate"] input[type="date"],
+[data-theme="corporate"] input[type="datetime-local"] {
+  border: 1.5px solid #475569;
+  background-color: #1e293b;
+  color: #f1f5f9;
+  color-scheme: dark;
+}
+
+[data-theme="corporate"] input[type="time"]:hover:not(:disabled),
+[data-theme="corporate"] input[type="date"]:hover:not(:disabled),
+[data-theme="corporate"] input[type="datetime-local"]:hover:not(:disabled) {
+  border-color: #64748b;
+}
+
+[data-theme="corporate"] input[type="time"]:focus,
+[data-theme="corporate"] input[type="date"]:focus,
+[data-theme="corporate"] input[type="datetime-local"]:focus {
+  border-color: rgb(var(--color-primary));
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+}
+
+[data-theme="corporate"] input[type="time"]:disabled,
+[data-theme="corporate"] input[type="date"]:disabled,
+[data-theme="corporate"] input[type="datetime-local"]:disabled {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #64748b;
+}
+
 /* ==========================================================
-   📱 MOBILE RESPONSIVE REFACTOR (NEW)
+   MOBILE RESPONSIVE REFACTOR (NEW)
    ========================================================== */
 @media (max-width: 768px) {
   /* 1. Prevent desktop layouts from breaking container boundaries */

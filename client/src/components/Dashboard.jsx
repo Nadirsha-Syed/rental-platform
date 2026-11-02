@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MapPin } from "lucide-react";
 import Navbar from "../components/Navbar";
 import API_BASE_URL from "../config/api";
 import "./Dashboard.css"; 
@@ -69,7 +70,7 @@ export default function Dashboard() {
           <p className="dashboard-subtitle">Track your booking orders, validation tokens, and rental history.</p>
         </header>
 
-        {/* 📋 Borrower Activity List Matrix */}
+        {/* Borrower Activity List Matrix */}
         <section className="bookings-section">
           <div className="section-header">
             <h3 className="section-title">Your Rental Orders</h3>
@@ -99,7 +100,7 @@ export default function Dashboard() {
                     <td className="item-cell">
                       <span style={{ fontWeight: "600" }}>{booking.rentalItem?.title || "Item Unavailable"}</span>
                     </td>
-                    <td>📍 {booking.rentalItem?.location || "N/A"}</td>
+                    <td><span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}><MapPin size={14} />{booking.rentalItem?.location || "N/A"}</span></td>
                     <td className="date-cell">
                       {new Date(booking.startTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                     </td>

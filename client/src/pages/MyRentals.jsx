@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./MyRentals.css";
-// 🔥 Centralized API base configurations 
+// Centralized API base configurations 
 import API_BASE_URL from "../config/api"; 
 
 export default function MyRentals() {
@@ -94,7 +94,7 @@ export default function MyRentals() {
           prev.map((r) => (r._id === editForm.id ? { ...r, ...targetItem } : r))
         );
         setIsModalOpen(false);
-        fetchMyRentals(); // 🔄 Refresh to ensure frontend maps clean visual metrics instantly
+        fetchMyRentals(); // Refresh to ensure frontend maps clean visual metrics instantly
       }
     } catch (err) {
       console.error("Update failed:", err);
@@ -131,8 +131,8 @@ export default function MyRentals() {
             </button>
           </div>
         ) : (
-          /* 🧾 Rentals Grid Wrapper */
-          /* ✅ FIXED: Applied explicit 260px tracks and left-justification inline to match the main catalog behavior */
+          /* Rentals Grid Wrapper */
+          /* FIXED: Applied explicit 260px tracks and left-justification inline to match the main catalog behavior */
           <div 
             className="rentalsGrid"
             style={{
@@ -162,7 +162,7 @@ export default function MyRentals() {
           </div>
         )}
 
-        {/* 🪟 EDIT MODAL OVERLAY */}
+        {/* EDIT MODAL OVERLAY */}
         {isModalOpen && (
           <div className="modalOverlay">
             <div className="modalContent">

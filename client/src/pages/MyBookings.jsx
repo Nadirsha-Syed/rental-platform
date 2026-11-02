@@ -1,8 +1,9 @@
+import { MapPin, CreditCard } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { executeRentalPayment } from "../services/razorpayService";
-// 🔥 MODIFIED: Import your dynamic base URL configuration
+// MODIFIED: Import your dynamic base URL configuration
 import API_BASE_URL from "../config/api"; 
 import "./MyBookings.css";
 
@@ -11,12 +12,12 @@ export default function MyBookings() {
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
 
-  // 🔥 Fetch bookings
+  // Fetch bookings
   const fetchBookings = async () => {
     try {
-      const token = localStorage.getItem("token"); // 🔥 Added token safety lookup
+      const token = localStorage.getItem("token"); // Added token safety lookup
 
-      // 🔥 MODIFIED: Swapped hardcoded URL for API_BASE_URL and added Authorization headers
+      // MODIFIED: Swapped hardcoded URL for API_BASE_URL and added Authorization headers
       const res = await fetch(`${API_BASE_URL}/api/bookings/my-bookings`, {
         headers: {
           "Authorization": `Bearer ${token}`
@@ -36,13 +37,13 @@ export default function MyBookings() {
     fetchBookings();
   }, []);
 
-  // 🔥 Cancel booking
+  // Cancel booking
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;
     try {
-      const token = localStorage.getItem("token"); // 🔥 Retrieve authorization state
+      const token = localStorage.getItem("token"); // Retrieve authorization state
       
-      // 🔥 MODIFIED: Swapped hardcoded URL for API_BASE_URL and attached bearer token
+      // MODIFIED: Swapped hardcoded URL for API_BASE_URL and attached bearer token
       const res = await fetch(
         `${API_BASE_URL}/api/bookings/${id}/cancel`,
         {
@@ -56,7 +57,7 @@ export default function MyBookings() {
       const data = await res.json();
 
       if (res.ok) {
-        alert("Booking cancelled ❌");
+        alert("Booking cancelled");
         fetchBookings(); // refresh
       } else {
         alert(data.message);
@@ -66,7 +67,7 @@ export default function MyBookings() {
     }
   };
 
-  // 💳 Pay Now Handler
+  // Pay Now Handler
   const handlePay = async (booking) => {
     if (!user) {
       alert("Please sign in to complete the payment transaction.");
@@ -143,9 +144,7 @@ export default function MyBookings() {
                   <h3>{b.rentalItem?.title || "Deleted Rental Item"}</h3>
 
                   {/* LOCATION */}
-                  <span className="locationInfo">
-                    📍 {b.rentalItem?.location || "No Location Specified"}
-                  </span>
+                  <span className="locationInfo"><MapPin size={14} /> <span>{b.rentalItem?.location || "No Location Specified"}</span></span>
 
                   {/* TIME */}
                   <div className="dateTimeInfo">
@@ -176,7 +175,7 @@ export default function MyBookings() {
                   {/* Pay button shown only when confirmed and unpaid */}
                   {b.status === "confirmed" && b.paymentStatus !== "paid" && (
                     <button className="btnPayNow" onClick={() => handlePay(b)}>
-                      💳 Pay Now
+                      <CreditCard size={16} /> Pay Now
                     </button>
                   )}
 

@@ -5,7 +5,7 @@
   padding: 2rem;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
-  /* 🎨 THEME FIX: Main layout background adaptation */
+  /* THEME FIX: Main layout background adaptation */
   background: transparent; 
 }
 
@@ -25,7 +25,7 @@
 /* THE GRID - Stops dynamic banner stretching */
 .rentalsGrid {
   display: grid !important;
-  /* 🔄 auto-fill implicit columns to the right instead of widening content */
+  /* auto-fill implicit columns to the right instead of widening content */
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
   gap: 2rem;
   width: 100%;
@@ -34,7 +34,7 @@
 
 /* Card Styling */
 .rentalCard {
-  /* 🎨 THEME FIX: Respects active theme surface background colors */
+  /* THEME FIX: Respects active theme surface background colors */
   background: var(--surface);
   border-radius: 16px;
   overflow: hidden;
@@ -43,7 +43,7 @@
   display: flex;
   flex-direction: column;
   
-  /* 🔐 CRITICAL FIX: Locks max structural boundaries */
+  /* CRITICAL FIX: Locks max structural boundaries */
   max-width: 260px !important; 
   width: 100%;
 }
@@ -131,7 +131,7 @@
   transform: translateY(-1px);
 }
 
-/* 🪟 Modal Styling (FIXED FOR DARK MODE) */
+/* Modal Styling (FIXED FOR DARK MODE) */
 .modalOverlay {
   position: fixed; 
   top: 0; left: 0;

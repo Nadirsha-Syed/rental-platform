@@ -3,7 +3,7 @@ import { ThemeContext } from "../context/ThemeContext";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./auth.css";
-// 🔥 MODIFIED: Import your dynamic base URL configuration
+// MODIFIED: Import your dynamic base URL configuration
 import API_BASE_URL from "../config/api"; 
 
 export default function Register() {
@@ -15,7 +15,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    // 🔗 MODIFIED: Dynamically point registration requests to centralized API_BASE_URL layout boundaries
+    // MODIFIED: Dynamically point registration requests to centralized API_BASE_URL layout boundaries
     const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: "POST",
       headers: {
@@ -41,7 +41,7 @@ export default function Register() {
       <div className={`authPage ${theme}`}>
         <div className="authCard">
 
-          <h2>Create Account 🚀</h2>
+          <h2>Create Account</h2>
           <p className="subtitle">Start renting & earning</p>
 
           <input

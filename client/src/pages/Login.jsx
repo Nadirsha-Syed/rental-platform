@@ -1,21 +1,21 @@
 import { useState, useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
-import { AuthContext } from "../context/AuthContext"; // 🔥 MODIFIED: Hook into global auth context
+import { AuthContext } from "../context/AuthContext"; // MODIFIED: Hook into global auth context
 import { useNavigate, Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import Navbar from "../components/Navbar";
-import API_BASE_URL from "../config/api"; // 🔥 MODIFIED: Centralized API route configuration
+import API_BASE_URL from "../config/api"; // MODIFIED: Centralized API route configuration
 import "./auth.css";
 
 export default function Login() {
   const { theme } = useContext(ThemeContext);
-  const { login } = useContext(AuthContext); // 🔥 MODIFIED: Extract global login dispatch handler
+  const { login } = useContext(AuthContext); // MODIFIED: Extract global login dispatch handler
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // 🔐 Email login
+  // Email login
   const handleLogin = async () => {
     try {
       if (!email || !password) {
@@ -23,7 +23,7 @@ export default function Login() {
         return;
       }
 
-      // 🔗 MODIFIED: Replaced hardcoded URL with centralized API_BASE_URL layout boundaries
+      // MODIFIED: Replaced hardcoded URL with centralized API_BASE_URL layout boundaries
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -35,7 +35,7 @@ export default function Login() {
       console.log("LOGIN API RESPONSE:", result);
 
       if (response.ok) {
-        // 🔥 MODIFIED: Trigger central context logic instead of disconnected local state tracking
+        // MODIFIED: Trigger central context logic instead of disconnected local state tracking
         if (result.user) {
           // Pass the combined object containing the backend user and token properties
           login({ ...result.user, token: result.token });
@@ -54,10 +54,10 @@ export default function Login() {
     }
   };
 
-  // 🔐 Google login
+  // Google login
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      // 🔗 MODIFIED: Replaced hardcoded URL with centralized API_BASE_URL layout boundaries
+      // MODIFIED: Replaced hardcoded URL with centralized API_BASE_URL layout boundaries
       const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,7 +75,7 @@ export default function Login() {
         return;
       }
 
-      // 🔥 MODIFIED: Sync google pipeline properties directly with your dynamic global state provider
+      // MODIFIED: Sync google pipeline properties directly with your dynamic global state provider
       if (result.user) {
         login({ ...result.user, token: result.token });
       } else {
@@ -100,7 +100,7 @@ export default function Login() {
             <p>Your go-to rental marketplace</p>
           </div>
 
-          <h2>Welcome Back 👋</h2>
+          <h2>Welcome Back</h2>
           <p className="subtitle">Login to your account</p>
 
           <input

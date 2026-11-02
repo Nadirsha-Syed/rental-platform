@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { Upload } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from "../config/api"; // ✅ 1. Import your dynamic API configuration url map!
+import API_BASE_URL from "../config/api"; // 1. Import your dynamic API configuration url map!
 
 export default function AddRental() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export default function AddRental() {
     }
 
     try {
-      // ✅ 2. FIXED: Replaced hardcoded localhost with your dynamic API_BASE_URL wrapper hook!
+      // 2. FIXED: Replaced hardcoded localhost with your dynamic API_BASE_URL wrapper hook!
       const res = await fetch(`${API_BASE_URL}/api/rentals`, {
         method: "POST",
         headers: {
@@ -74,7 +75,7 @@ export default function AddRental() {
       const data = await res.json();
 
       if (res.ok) {
-        alert("Rental Added 🚀");
+        alert("Rental Added");
         navigate("/products");
       } else {
         alert(data.message || "Error adding rental");
@@ -95,8 +96,9 @@ export default function AddRental() {
           {preview ? (
             <img src={preview} alt="preview" className="object-cover w-full h-full rounded-xl" />
           ) : (
-            <div className="text-center">
-              <p className="text-gray-500">📸 Click to upload image</p>
+            <div className="flex flex-col items-center justify-center gap-2 text-center text-gray-500">
+              <Upload className="w-8 h-8 text-gray-400" />
+              <p className="text-sm">Click to upload image</p>
             </div>
           )}
           <input

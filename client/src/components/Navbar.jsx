@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import NotificationBell from "./NotificationBell";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, User } from "lucide-react";
 import API_BASE_URL from "../config/api";
 
 export default function Navbar() {
@@ -104,7 +104,7 @@ export default function Navbar() {
 
 
           <Link to="/profile" className="profileAvatar" title="Profile & Account">
-            {isAuthenticated && user?.name ? user.name[0].toUpperCase() : "👤"}
+            {isAuthenticated && user?.name ? user.name[0].toUpperCase() : <User size={18} />}
           </Link>
 
         </div>

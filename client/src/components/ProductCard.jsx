@@ -15,9 +15,9 @@ export default function ProductCard({ item }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        // 🎨 THEME FIX: Uses your custom --surface dynamic var fallback framework
+        // THEME FIX: Uses your custom --surface dynamic var fallback framework
         backgroundColor: "var(--surface)", 
-        // 🎨 THEME FIX: Maps border lines to look crisp in light or dark panels
+        // THEME FIX: Maps border lines to look crisp in light or dark panels
         border: "1px solid rgba(var(--text-muted), 0.2)", 
         borderRadius: "14px",
         overflow: "hidden",
@@ -26,7 +26,7 @@ export default function ProductCard({ item }) {
       }}
     >
       
-      {/* 🖼️ Match with .thumb in index.css */}
+      {/* Match with .thumb in index.css */}
       <div 
         className="thumb"
         style={{
@@ -36,7 +36,7 @@ export default function ProductCard({ item }) {
           overflow: "hidden",
           position: "relative",
           margin: 0,
-          // 🎨 THEME FIX: Keeps background frame dynamic under loading/lazy states
+          // THEME FIX: Keeps background frame dynamic under loading/lazy states
           backgroundColor: "rgba(var(--text-muted), 0.1)"
         }}
       >
@@ -52,7 +52,7 @@ export default function ProductCard({ item }) {
         <span className="badge">Available</span>
       </div>
 
-      {/* 📝 Match with .meta in index.css */}
+      {/* Match with .meta in index.css */}
       <div 
         className="meta"
         style={{
@@ -64,7 +64,7 @@ export default function ProductCard({ item }) {
         }}
       >
         <div>
-          {/* 🎨 THEME FIX: Forces text colors to dynamically swap to --text-main mappings */}
+          {/* THEME FIX: Forces text colors to dynamically swap to --text-main mappings */}
           <h3 style={{ 
             margin: "0 0 4px 0", 
             fontSize: "16px", 
@@ -78,19 +78,19 @@ export default function ProductCard({ item }) {
           </h3>
           
           {/* Dynamic location - no hardcoding */}
-          {/* 🎨 THEME FIX: Swaps location info lines into matching --text-muted values */}
+          {/* THEME FIX: Swaps location info lines into matching --text-muted values */}
           <p className="loc" style={{ margin: "0", fontSize: "14px", color: "rgb(var(--text-muted))" }}>
             {item.location ? item.location : "No location"}
           </p>
         </div>
 
-        {/* 💰 Match with .row and .price in index.css */}
+        {/* Match with .row and .price in index.css */}
         <div className="row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px" }}>
-          {/* 🎨 THEME FIX: Price aligns natively into light/dark states */}
+          {/* THEME FIX: Price aligns natively into light/dark states */}
           <span className="price" style={{ fontSize: "16px", fontWeight: "700", color: "rgb(var(--text-main))" }}>
             ₹{item.pricePerHour}/hr
           </span>
-          {/* 🎨 THEME FIX: Button color inherits the primary signature theme dynamically */}
+          {/* THEME FIX: Button color inherits the primary signature theme dynamically */}
           <button 
             className="btn" 
             style={{ 

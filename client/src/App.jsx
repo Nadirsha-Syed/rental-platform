@@ -10,7 +10,7 @@ import OwnerDashboard from "./pages/OwnerDashboard";
 import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
 
-// 🔥 New Production Architecture Additions
+// New Production Architecture Additions
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -20,14 +20,14 @@ function App() {
     <GoogleOAuthProvider clientId="987414878648-tnfc7d9fgnbdj0lchkp0osf8u4b9cucr.apps.googleusercontent.com">
       <AuthProvider>
         <Routes>
-          {/* 🌐 Open Public Market Routes */}
+          {/* Open Public Market Routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:productId" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* 🔒 Strict Protected Private Dashboards */}
+          {/* Strict Protected Private Dashboards */}
           <Route element={<ProtectedRoute />}>
             <Route path="/add-rental" element={<AddRental />} />
             <Route path="/my-rentals" element={<MyRentals />} />
